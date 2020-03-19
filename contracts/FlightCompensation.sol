@@ -18,20 +18,20 @@ contract FlightCompensation{
         uint256 maxArrivalTime1;   //Original Arrival time + 6 hours
         uint256 maxArrivalTime2;   //Original Arrival time + 9 hours
         uint8 status;           //status of the flight
-        uint16 compensation;    //amount owed to the passenger: $0-$1000
+        uint16 compensation    //amount owed to the passenger: $0-$1000
     }
 
     event ClaimCreation(    //event sent when a new claim is added to the smart contract
         uint256 ID,        //ID identifying the claim/passenger
         uint8 airlineType, //Possible airline types: 0: small airline, 1: large airline
-        bytes32 flightID,  // <carrier_code><flight_number>.<timestamp_in_sec_of_departure_date>
+        bytes32 flightID  // <carrier_code><flight_number>.<timestamp_in_sec_of_departure_date>
     );
 
     event ClaimResolve(     //event sent when the claim is resolved
         bytes32 ID,           // id string of the user linked to this account
         bytes32 flightID,   // <carrier_code><flight_number>.<timestamp_in_sec_of_departure_date>
-        uint8 status;           //status of the flight
-        uint16 compensation;    //amount owed to the passenger: $0-$1000
+        uint8 status,           //status of the flight
+        uint16 compensation    //amount owed to the passenger: $0-$1000
     );
 
 }
