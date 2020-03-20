@@ -56,7 +56,7 @@ contract FlightCompensation{
         creator = msg.sender;
     }
 
-    function addNewClaim (
+    function addNewClaim(
         uint256 ID,
         bytes32 flightID,
         uint8 airlineType,
@@ -67,19 +67,57 @@ contract FlightCompensation{
     )
     external onlyIfCreator {
         
-    Claim memory claimToAdd;
-    claimToAdd.ID = ID;
-    claimToAdd.airlineType = airlineType;
-    claimToAdd.maxArrivalTime0 = maxArrivalTime0;
-    claimToAdd.maxArrivalTime1 = maxArrivalTime1;
-    claimToAdd.maxArrivalTime2 = maxArrivalTime2;
-    claimToAdd.compensationAddress = compensationAddress;
-    claimToAdd.status = 0; //when we create a claim, it is ongoing -> code:0
-    claimToAdd.compensation = 0; //when we create a claim, initial compensation is 0
+        Claim memory claimToAdd;
+        claimToAdd.ID = ID;
+        claimToAdd.airlineType = airlineType;
+        claimToAdd.maxArrivalTime0 = maxArrivalTime0;
+        claimToAdd.maxArrivalTime1 = maxArrivalTime1;
+        claimToAdd.maxArrivalTime2 = maxArrivalTime2;
+        claimToAdd.compensationAddress = compensationAddress;
+        claimToAdd.status = 0; //when we create a claim, it is ongoing -> code:0
+        claimToAdd.compensation = 0; //when we create a claim, initial compensation is 0
 
-    claimList[flightID].push(claimToAdd);
+        claimList[flightID].push(claimToAdd);
 
-    emit ClaimCreation(ID, airlineType, flightID);
-  }
+        emit ClaimCreation(ID, airlineType, flightID);
+    }
+    /*
+    * @dev Update the status of a flight
+    * @param flightId <carrier_code><flight_number>.<timestamp_in_sec_of_departure_date>
+    * @param actualArrivalTime The actual arrival time of the flight (timestamp in sec)
+    */
+    function updateFlightStatus(
+        bytes32 flightID,
+        uint256 actualArrivalTime
+    )
+    external onlyIfCreator {
+        //default is that the flight landed on time, we hope!
+        uint8 updatedStatus = 1;
 
+        //for all claims in a flight, do this...
+        for (uint i = 0; i < claimList[flightID].length; i++) {
+            //going through only the ongoing claims
+            if (claimList[flightID][i].status == 0) {
+                updatedStatus = 1;
+                if (actualArrivalTime > claimList[flightID][i].maxArrivalTime2){
+                    updatedStatus = 4;
+                }
+                else if (actualArrivalTime > claimList[flightID][i].maxArrivalTime1){
+                    updatedStatus = 3;
+                }
+                else if (actualArrivalTime > claimList[flightID][i].maxArrivalTime0){
+                    updatedStatus = 2;
+                }
+                // update the status of the claim
+                claimList[flightID][i].status = updatedStatus;
+                
+                emit ClaimResolve(
+                    claimList[flightID][i].ID,        
+                    flightID,  
+                    updatedStatus,           
+                    claimList[flightID][i].compensation 
+                );
+            }
+        }
+    }
 }
