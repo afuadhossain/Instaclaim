@@ -1,6 +1,17 @@
 pragma solidity ^0.5.16;
 
 contract FlightCompensation{
+    
+    /*
+    * Compensation amounts
+    */
+    uint16 small3 = 125;
+    uint16 small6 = 250;
+    uint16 small9 = 500;
+    uint16 large3 = 400;
+    uint16 large6 = 700;
+    uint16 large9 = 1000;
+
     /*
     * Posible statuses for the claim:
     * 0: ongoing
@@ -66,7 +77,7 @@ contract FlightCompensation{
         address payable compensationAddress
     )
     external onlyIfCreator {
-        
+
         Claim memory claimToAdd;
         claimToAdd.ID = ID;
         claimToAdd.airlineType = airlineType;
@@ -98,24 +109,44 @@ contract FlightCompensation{
         for (uint i = 0; i < claimList[flightID].length; i++) {
             //going through only the ongoing claims
             if (claimList[flightID][i].status == 0) {
-                updatedStatus = 1;
                 if (actualArrivalTime > claimList[flightID][i].maxArrivalTime2){
                     updatedStatus = 4;
+                    
+                    if (claimList[flightID][i].airlineType == 0){
+                        claimList[flightID][i].compensation = small9;
+                    }
+                    else {
+                        claimList[flightID][i].compensation = large9;
+                    }
                 }
                 else if (actualArrivalTime > claimList[flightID][i].maxArrivalTime1){
                     updatedStatus = 3;
+
+                    if (claimList[flightID][i].airlineType == 0){
+                        claimList[flightID][i].compensation = small6;
+                    }
+                    else {
+                        claimList[flightID][i].compensation = large6;
+                    }
                 }
                 else if (actualArrivalTime > claimList[flightID][i].maxArrivalTime0){
                     updatedStatus = 2;
+
+                    if (claimList[flightID][i].airlineType == 0){
+                        claimList[flightID][i].compensation = small3;
+                    }
+                    else {
+                        claimList[flightID][i].compensation = large3;
+                    }
                 }
                 // update the status of the claim
                 claimList[flightID][i].status = updatedStatus;
                 
                 emit ClaimResolve(
-                    claimList[flightID][i].ID,        
-                    flightID,  
-                    updatedStatus,           
-                    claimList[flightID][i].compensation 
+                    claimList[flightID][i].ID,
+                    flightID,
+                    updatedStatus,
+                    claimList[flightID][i].compensation
                 );
             }
         }
