@@ -65,8 +65,6 @@ contract FlightCompensation{
     */
     constructor () public {
         creator = msg.sender;
-
-        addNewClaim(12,"123",1,1,2,3,address(0x123));
     }
 
     function addNewClaim(
@@ -78,7 +76,7 @@ contract FlightCompensation{
         uint256 maxArrivalTime2,
         address payable compensationAddress
     )
-    public onlyIfCreator {
+    external onlyIfCreator {
 
         Claim memory claimToAdd;
         claimToAdd.ID = ID;
