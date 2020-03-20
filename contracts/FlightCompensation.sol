@@ -65,6 +65,8 @@ contract FlightCompensation{
     */
     constructor () public {
         creator = msg.sender;
+
+        addNewClaim(12,"123",1,1,2,3,address(0x123));
     }
 
     function addNewClaim(
@@ -76,7 +78,7 @@ contract FlightCompensation{
         uint256 maxArrivalTime2,
         address payable compensationAddress
     )
-    external onlyIfCreator {
+    public onlyIfCreator {
 
         Claim memory claimToAdd;
         claimToAdd.ID = ID;
@@ -149,6 +151,42 @@ contract FlightCompensation{
                     claimList[flightID][i].compensation
                 );
             }
+        }
+    }
+
+    function getClaimsCount(bytes32 flightID) public view onlyIfCreator returns (uint) {
+        return claimList[flightID].length;
+    }
+
+    function getClaim(bytes32 flightID, uint i) public view onlyIfCreator returns (
+                        uint256, uint8, uint256, uint256, uint256, uint8, uint16, address payable) {
+        Claim memory claim = claimList[flightID][i];
+        return (claim.ID, claim.airlineType, claim.maxArrivalTime0, claim.maxArrivalTime1,
+                    claim.maxArrivalTime2, claim.status, claim.compensation, claim.compensationAddress);
+    }
+
+
+    function compensateIfEnoughFunds(Claim memory claim) private {
+        if (claim.compensationAddress != address(0)) {
+            compensate(claim.compensationAddress, claim.compensation, claim.ID);
+        }
+    }
+
+
+    /**
+    * @dev Sends an indemnity to a user.
+    * @param recipient The ethereum address of the user.
+    * @param amount The amount of ether to send to the user.
+    * @param ID The ID of the claim.
+    */
+    function compensate(address payable recipient, uint16 amount, uint256 ID) internal returns (bool) {
+        if(recipient.send(amount)) {
+            // emit EtherCompensation(amount, recipient, ID);
+            return true;
+        } else {
+            // getAssetManager().transfer(amount);
+            // emit EtherCompensationError(amount, recipient, ID);
+            return false;
         }
     }
 }
