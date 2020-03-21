@@ -11,6 +11,7 @@ contract FlightCompensation{
     uint16 large3 = 400;
     uint16 large6 = 700;
     uint16 large9 = 1000;
+    uint256 private availableFunds;
 
     /*
     * Posible statuses for the claim:
@@ -46,7 +47,20 @@ contract FlightCompensation{
         uint16 compensation    //amount owed to the passenger: $0-$1000
     );
 
-    address creator;        // address of the creator of the contract
+    event CompensationPaid(     //event sent when the claim's determined compensation has been payed to passenger
+        uint256 ID,             //ID identifying the claim/passenger
+        uint16 compensation,    //confirmed amount sent to the passenger's account
+        address recipient       //passenger's address
+    );
+
+    event CompensationError(    //event sent when there is an error in sending the compensation to the passenger
+        uint256 ID,             //ID identifying the claim/passenger
+        uint16 compensation,    //confirmed amount sent to the passenger's account
+        address recipient,      //passenger's address
+        bytes32 errorMessage    //error message
+    );
+
+    address payable creator;        // address of the creator of the contract
 
     // All the insurances handled by this smart contract are contained in this mapping
     // key: a string containing the flight number and the timestamp separated by a dot
@@ -60,6 +74,10 @@ contract FlightCompensation{
         if (msg.sender == creator) _;
     }
 
+    modifier enoughFunds(uint16 compensation) {
+        require(availableFunds >= compensation/150, "Not enough funds in contract to pay compensation");
+        _;
+    }
     /**
     * @dev Constructor
     */
@@ -111,7 +129,6 @@ contract FlightCompensation{
             if (claimList[flightID][i].status == 0) {
                 if (actualArrivalTime > claimList[flightID][i].maxArrivalTime2){
                     updatedStatus = 4;
-                    
                     if (claimList[flightID][i].airlineType == 0){
                         claimList[flightID][i].compensation = small9;
                     }
@@ -141,13 +158,14 @@ contract FlightCompensation{
                 }
                 // update the status of the claim
                 claimList[flightID][i].status = updatedStatus;
-                
                 emit ClaimResolve(
                     claimList[flightID][i].ID,
                     flightID,
                     updatedStatus,
                     claimList[flightID][i].compensation
                 );
+
+                compensateIfEnoughFunds(claimList[flightID][i]);
             }
         }
     }
@@ -163,28 +181,33 @@ contract FlightCompensation{
                     claim.maxArrivalTime2, claim.status, claim.compensation, claim.compensationAddress);
     }
 
-
-    function compensateIfEnoughFunds(Claim memory claim) private {
-        if (claim.compensationAddress != address(0)) {
-            compensate(claim.compensationAddress, claim.compensation, claim.ID);
+    function deposit() external payable onlyIfCreator {
+        availableFunds = availableFunds + msg.value;
+    }
+    function withdraw(uint16 amount) external onlyIfCreator enoughFunds(amount){
+        availableFunds = availableFunds - amount;
+        creator.transfer(amount);
+    }
+    function compensate(
+        uint256 ID,
+        uint16 compensation,
+        address payable recipient
+    )
+    internal enoughFunds(compensation){
+        uint16 ETHcompensation = compensation/150;
+        //if(recipient.send(compensation)) {
+            recipient.transfer(ETHcompensation);
+            emit CompensationPaid(ID, ETHcompensation, recipient);
+        //}
+        //else {
+        //    bytes32 errorMessage = "airline is bankrupt no money";
+        //    emit CompensationError(ID, ETHcompensation, recipient, errorMessage);
+        //}
+    }
+    function compensateIfEnoughFunds(Claim memory claimToPay) private {
+        if (claimToPay.compensationAddress != address(0)) {
+            compensate(claimToPay.ID, claimToPay.compensation, claimToPay.compensationAddress);
         }
     }
 
-
-    /**
-    * @dev Sends an indemnity to a user.
-    * @param recipient The ethereum address of the user.
-    * @param amount The amount of ether to send to the user.
-    * @param ID The ID of the claim.
-    */
-    function compensate(address payable recipient, uint16 amount, uint256 ID) internal returns (bool) {
-        if(recipient.send(amount)) {
-            // emit EtherCompensation(amount, recipient, ID);
-            return true;
-        } else {
-            // getAssetManager().transfer(amount);
-            // emit EtherCompensationError(amount, recipient, ID);
-            return false;
-        }
-    }
 }

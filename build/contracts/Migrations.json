@@ -1371,9 +1371,17 @@
     "name": "solc",
     "version": "0.5.16+commit.9c3226ce.Emscripten.clang"
   },
-  "networks": {},
+  "networks": {
+    "5777": {
+      "events": {},
+      "links": {},
+      "address": "0xdCa585CaFc3892F7780E784Cd16e29E339b81b79",
+      "transactionHash": "0xdeb42124d1c898ed8272f6993151a37b1f19d3af0af4afcb98430508b5b100f2"
+    }
+  },
   "schemaVersion": "3.0.23",
-  "updatedAt": "2020-03-19T20:32:55.017Z",
+  "updatedAt": "2020-03-21T02:12:11.305Z",
+  "networkType": "ethereum",
   "devdoc": {
     "methods": {}
   },
