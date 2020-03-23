@@ -27,9 +27,9 @@ App = {
       // Connect provider to interact with contract
       App.contracts.FlightCompensation.setProvider(App.web3Provider);
 
-      App.contracts.FlightCompensation.deployed().then(function(instance){
-        console.log(instance)
-        ;});
+      // App.contracts.FlightCompensation.deployed().then(function(instance){
+      //   console.log(instance)
+      //   ;});
         
       App.createClaim();
     });
@@ -44,11 +44,24 @@ App = {
       }
 
       var account = accounts[0];
+      var contractAddress = App.contracts.FlightCompensation.deployed().address
+
+      web3.eth.sendTransaction({
+        to: contractAddress, 
+        from: account, 
+        value:web3.toWei("0.05", "ether")
+      },function(error, result){
+        if(!error)
+            console.log(JSON.stringify(result));
+        else
+            console.error(error);
+     })
 
       App.contracts.FlightCompensation.deployed().then(function(instance) {
         compensationInstance = instance;
         dummyAddress = "0x38Ce67d8Ef62A091ffB4474ccb428b588A559748" //Will have to change that
         // Execute adopt as a transaction by sending account
+        compensationInstance.deposit();
         return compensationInstance.addNewClaim(12,"0x7465737400000000000000000000000000000000000000000000000000000000",1,1,2,3, dummyAddress, {from: account});
       }).then(function(result) {
         console.log(result)
