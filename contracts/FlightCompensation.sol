@@ -1,7 +1,6 @@
 pragma solidity ^0.5.16;
 
 contract FlightCompensation{
-    
     /*
     * Compensation amounts
     */
@@ -11,7 +10,7 @@ contract FlightCompensation{
     uint16 large3 = 400;
     uint16 large6 = 700;
     uint16 large9 = 1000;
-    uint256 private availableFunds;
+    uint256 private availableFunds; //variable storing the contract funds
 
     /*
     * Posible statuses for the claim:
