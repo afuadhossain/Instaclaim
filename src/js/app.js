@@ -58,6 +58,7 @@ App = {
       var account = accounts[0];
       var contractAddress = App.contracts.FlightCompensation.deployed().address
 
+      //Send money to fallback function
       web3.eth.sendTransaction({
         to: contractAddress, 
         from: account, 
@@ -69,8 +70,10 @@ App = {
             console.error(error);
      })
 
-      App.contracts.FlightCompensation.deployed().then(function(instance) {
-        compensationInstance = instance;
+      App.contracts.FlightCompensation.deployed().then(function(compensationInstance) {
+        //Send money to deposit function
+        compensationInstance.deposit.sendTransaction({from: account, value : web3.toWei("0.015", "ether")});
+
         dummyAddress = "0x38Ce67d8Ef62A091ffB4474ccb428b588A559748" //Will have to change that
         // Execute adopt as a transaction by sending account
         compensationInstance.deposit();

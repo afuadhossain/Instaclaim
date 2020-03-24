@@ -180,6 +180,13 @@ contract FlightCompensation{
                     claim.maxArrivalTime2, claim.status, claim.compensation, claim.compensationAddress);
     }
 
+    //Fallback function. All deposits without any calling function by default go to this function
+    //https://solidity.readthedocs.io/en/v0.5.3/contracts.html#fallback-function
+    function() external payable {
+        availableFunds = availableFunds + msg.value;
+    }
+
+    //Deposits made with deposit() go to this function
     function deposit() external payable onlyIfCreator {
         availableFunds = availableFunds + msg.value;
     }
