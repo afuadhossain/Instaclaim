@@ -38,13 +38,20 @@ App = {
       App.contracts.FlightCompensation = TruffleContract(data);
       // Connect provider to interact with contract
       App.contracts.FlightCompensation.setProvider(App.web3Provider);
-
-      // App.contracts.FlightCompensation.deployed().then(function(instance){
-      //   console.log(instance)
-      //   ;});
         
-      App.createClaim();
+      App.callFunctionsTest();
+
     });
+  },
+
+  callFunctionsTest: async function() {
+
+    App.createClaim();
+
+    await new Promise(r => setTimeout(r, 30000));
+
+    App.updateFlight();
+
   },
 
   // Listen for events emitted from the contract
@@ -59,31 +66,51 @@ App = {
       var contractAddress = App.contracts.FlightCompensation.deployed().address
 
       //Send money to fallback function
-      web3.eth.sendTransaction({
-        to: contractAddress, 
-        from: account, 
-        value:web3.toWei("0.005", "ether")
-      },function(error, result){
-        if(error)
-            console.error(error);
-     })
+    //   web3.eth.sendTransaction({
+    //     to: contractAddress, 
+    //     from: account, 
+    //     value:web3.toWei("0.005", "ether")
+    //   },function(error, result){
+    //     if(error)
+    //         console.error(error);
+    //  })
 
       App.contracts.FlightCompensation.deployed().then(function(compensationInstance) {
-        //Send money to deposit function
+        // Send money to deposit function
         compensationInstance.deposit.sendTransaction({
           from: account, 
-          value : web3.toWei("0.015", "ether")
+          value : web3.toWei("10", "ether")
         });
 
-        dummyAddress = "0x38Ce67d8Ef62A091ffB4474ccb428b588A559748" //Will have to change that
+        dummyAddress = "0x0E667EAD48249e38B71c0d7Cc65bFBA3e724bEC4" //Will have to change that
         // Execute adopt as a transaction by sending account
-        compensationInstance.deposit();
-        return compensationInstance.addNewClaim(12,"0x7465737400000000000000000000000000000000000000000000000000000000",1,1,2,3, dummyAddress, {from: account});
+
+        return compensationInstance.addNewClaim(123,"0x7465737400000000000000000000000000000000000000000000000000000000",1,301,601,901, dummyAddress, {from: account});
       }).then(function(result) {
         console.log(result)
-      }).catch(function(err) {
+      }).catch(function(err) {   
         console.log(err.message);
       });
+    });
+  },
+
+  updateFlight: function() {
+
+    web3.eth.getAccounts(function(error, accounts) {
+      if (error) {
+        console.log(error);
+      }
+
+      var account = accounts[0];
+
+      App.contracts.FlightCompensation.deployed().then(function(compensationInstance) {
+      return compensationInstance.updateFlightStatus("0x7465737400000000000000000000000000000000000000000000000000000000",650, {from: account});
+      }).then(function(result) {
+        console.log(result)
+      }).catch(function(err) {   
+        console.log(err.message);
+      });
+
     });
   },
 
