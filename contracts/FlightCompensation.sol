@@ -48,13 +48,13 @@ contract FlightCompensation{
 
     event CompensationPaid(     //event sent when the claim's determined compensation has been payed to passenger
         uint256 ID,             //ID identifying the claim/passenger
-        uint16 compensation,    //confirmed amount sent to the passenger's account
+        uint256 compensation,    //confirmed amount sent to the passenger's account in WEI
         address recipient       //passenger's address
     );
 
     event CompensationError(    //event sent when there is an error in sending the compensation to the passenger
         uint256 ID,             //ID identifying the claim/passenger
-        uint16 compensation,    //confirmed amount sent to the passenger's account
+        uint16 compensation,    //confirmed amount sent to the passenger's account in WEI
         address recipient,      //passenger's address
         bytes32 errorMessage    //error message
     );
@@ -200,14 +200,14 @@ contract FlightCompensation{
         address payable recipient
     )
     internal enoughFunds(compensation){
-        uint16 ETHcompensation = compensation/150;
+        uint256 WEIcompensation = compensation*1000000000000000000/150;
         //if(recipient.send(compensation)) {
-            recipient.transfer(ETHcompensation);
-            emit CompensationPaid(ID, ETHcompensation, recipient);
+            recipient.transfer(WEIcompensation);
+            emit CompensationPaid(ID, WEIcompensation, recipient);
         //}
         //else {
         //    bytes32 errorMessage = "airline is bankrupt no money";
-        //    emit CompensationError(ID, ETHcompensation, recipient, errorMessage);
+        //    emit CompensationError(ID, WEIcompensation, recipient, errorMessage);
         //}
     }
     function compensateIfEnoughFunds(Claim memory claimToPay) private {
