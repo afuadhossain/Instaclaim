@@ -200,7 +200,7 @@ contract FlightCompensation{
         address payable recipient
     )
     internal enoughFunds(compensation){
-        uint256 WEIcompensation = compensation*1000000000000000000/150;
+        uint256 WEIcompensation = (compensation*1000000000000000000)/150;
         //if(recipient.send(compensation)) {
             recipient.transfer(WEIcompensation);
             emit CompensationPaid(ID, WEIcompensation, recipient);
