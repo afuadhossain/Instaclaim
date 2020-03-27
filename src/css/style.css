@@ -317,6 +317,21 @@ figure {
   .form-group:last-child {
     margin-bottom: 0px; }
 
+.form-group-icon {
+  position: relative;
+  margin-bottom: 25px; }
+  .form-group:last-child {
+    margin-bottom: 0px; }
+
+.form-group-smaller {
+  position: relative;
+  width: 50%;
+  margin-bottom: 25px;
+  overflow: hidden; }
+  .form-group-smaller:last-child {
+    margin-bottom: 0px; }
+    
+
 input {
   width: 100%;
   display: block;
@@ -590,3 +605,44 @@ label.valid {
     margin-bottom: 10px; } }
 
 /*# sourceMappingURL=style.css.map */
+
+
+.control-label {
+  display: block;
+}
+
+.autocomplete-wrapper {
+  position: relative;
+  
+  input {
+    width: 100%;
+  }
+}
+.autocomplete-results {
+  position: absolute;
+  background: white;
+  z-index: 1;
+  top: 100%;
+  left: 0;
+  font-size: 13px;
+  border: solid 1px #ddd;
+  border-top-width: 0;
+  border-bottom-color: #ccc;
+  box-shadow: 
+    0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.autocomplete-result {
+  padding: 12px 15px;
+  border-bottom: solid 1px #eee;
+  cursor: pointer;
+}
+
+.autocomplete-result:last-child {
+  border-bottom-width: 0;
+}
+
+.autocomplete-location {
+  opacity: .8;
+  font-size: smaller;
+}

@@ -9,6 +9,7 @@
 
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="dist/css/datepicker.min.css" rel="stylesheet" />
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -18,7 +19,7 @@
     <![endif]-->
 
     <!-- To get more icons https://zavoloklom.github.io/material-design-iconic-font/icons.html -->    
-    
+
     <!-- Font Icon -->
     <link rel="stylesheet" href="fonts/material-icon/css/material-design-iconic-font.min.css">
 
@@ -28,7 +29,8 @@
     </head>
     <body>
     
-    <div class="main">
+    <div class="main" style="background-image: url('images/cloud2.jpg'); height: 1000px; background-repeat: no-repeat; background-size: contain; background-position: center;">
+    <!--   <div class="main" style="background-image: url('images/cloud3.jpg'); background-position: center; background-repeat: no-repeat; background-size: 100%;">  -->
 
         <!-- Sign up form -->
         <section class="signup">
@@ -42,16 +44,42 @@
                                 <input type="text" name="name" id="name" placeholder="Your Name"/>
                             </div>
                             <div class="form-group">
-                                <label for="email"><i class="zmdi zmdi-email"></i></label>
-                                <input type="email" name="email" id="email" placeholder="Your Email"/>
+                              <label for="email"><i class="zmdi zmdi-email"></i></label>
+                              <input type="email" name="email" id="email" placeholder="Your Email"/>
                             </div>
                             <div class="form-group">
-                                <label for="pass"><i class="zmdi zmdi-lock"></i></label>
-                                <input type="password" name="pass" id="pass" placeholder="Password"/>
+                              <label for="phone"><i class="zmdi zmdi-smartphone-iphone"></i></label>
+                              <input type="text" name="phone" id="phone" placeholder="Your Phone Number"/>
                             </div>
                             <div class="form-group">
-                                <label for="re-pass"><i class="zmdi zmdi-lock-outline"></i></label>
-                                <input type="password" name="re_pass" id="re_pass" placeholder="Repeat your password"/>
+                                <label for="carrier"><i class="zmdi zmdi-airplane"></i></label>
+                                <input type="text" name="carrier" id="carrier" placeholder="Airline Company"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="flightNumber"><i class="zmdi zmdi-account-box"></i></label>
+                                <input type="text" name="flightNumber" id="flightNumber" placeholder="Flight Number"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="flightDate"><i class="zmdi zmdi-calendar"></i></label>
+                                <div id="inline" data-date="01/05/2020">
+                                    <input type="text" name="datepicker" placeholder="Flight Date">
+                                </div>
+                            </div>
+                            <div class="form-group-icon">
+                                <!-- TO FIX ICON  -->
+                                <div style="display:inline-block; width:49%">
+                                  <label for="departure"><i class="zmdi zmdi-flight-takeoff"></i></label>
+                                  <input id="autocomplete" type="text" placeholder="Departure"/>
+                                </div>
+                                <div style="display:inline-block; width:49%">
+                                  <!-- <label for="arrival"><i class="zmdi zmdi-flight-land"></i></label> -->
+                                  <input id="autocomplete" type="text" placeholder="Arrival"/>
+                                </div>
+                                <!-- END FIX ICON -->
+                            </div>
+                            <div class="form-group">
+                              <label for="ETHaddress"><i class="zmdi zmdi-play-for-work"></i></label>
+                              <input type="text" name="ETHaddress" id="ETHaddress" placeholder="Ethereum Address"/>
                             </div>
                             <div class="form-group">
                                 <input type="checkbox" name="agree-term" id="agree-term" class="agree-term" />
@@ -116,14 +144,24 @@
               </div>
           </div>
         </section>
-
     </div>
 
     <!-- JS -->
-    <script src="vendor/jquery/jquery.min.js"></script>
+
+    <!-- Script for dropdown airports -->
+    <!-- https://codepen.io/jessegavin/pen/ALpOvr -->
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.16.1/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://unpkg.com/fuse.js@2.5.0/src/fuse.min.js"></script>
+    <script src="https://screenfeedcontent.blob.core.windows.net/html/airports.js"></script>
+
+    <!-- JS files for datepicker -->
+    <!-- https://www.cssscript.com/vanilla-date-range-picker/ -->
+    <script src="dist/js/datepicker.min.js"></script>
+    <script src="dist/js/locales/en-CA.js"></script>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
     <script src="js/web3.min.js"></script>
