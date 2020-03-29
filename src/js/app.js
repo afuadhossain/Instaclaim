@@ -10,6 +10,10 @@ var customer = {
   ETHaddress : ""
 }
 
+var flightInfo = {
+  flightID = "",
+}
+
 
 function newValueKeyPress(id) {
     var element = document.getElementById(id);
@@ -46,6 +50,14 @@ function newValueKeyPress(id) {
       default: return;
 
     }
+}
+
+function createFlightID(carrier, flightNumber) {
+  var flightID = "" + carrier + flightNumber;
+  var flightIDencoded = btoa(flightID);
+//   btoa(unescape(encodeURIComponent(str))))
+  
+  return flightIDencoded;
 }
 
 var options = {
@@ -233,6 +245,8 @@ App = {
 
   // Listen for events emitted from the contract
   createClaim: function() {
+    
+    flightInfo.flightID = createFlightID(customer.carrier, customer.flightNumber);
 
     web3.eth.getAccounts(function(error, accounts) {
       if (error) {
@@ -262,7 +276,15 @@ App = {
         dummyAddress = "0x0E667EAD48249e38B71c0d7Cc65bFBA3e724bEC4" //Will have to change that
         // Execute adopt as a transaction by sending account
 
-        return compensationInstance.addNewClaim(123,"0x7465737400000000000000000000000000000000000000000000000000000000",1,301,601,901, dummyAddress, {from: account});
+        return compensationInstance.addNewClaim(
+          123,
+          flightInfo.flightID,
+          1,
+          301,
+          601,
+          901,
+          dummyAddress,
+          {from: account});
       }).then(function(result) {
         console.log(result)
       }).catch(function(err) {   
