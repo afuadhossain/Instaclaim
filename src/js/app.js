@@ -11,7 +11,7 @@ var customer = {
 }
 
 var flightInfo = {
-  flightID = "",
+  flightID : "",
 }
 
 
@@ -54,8 +54,9 @@ function newValueKeyPress(id) {
 
 function createFlightID(carrier, flightNumber) {
   var flightID = "" + carrier + flightNumber;
-  var flightIDencoded = btoa(flightID);
-//   btoa(unescape(encodeURIComponent(str))))
+  var flightIDencoded = web3.fromAscii(flightID);
+
+// web3.toAscii(val)
   
   return flightIDencoded;
 }
