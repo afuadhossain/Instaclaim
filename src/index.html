@@ -36,22 +36,45 @@
                 <div class="signup-content">
                     <div class="signup-form">
                         <h2 class="form-title">Automated flight-delay compensation</h2>
-                        <form method="POST" class="register-form" id="register-form">
+                        <!-- <form action="javascript:alert('Hello there, I am being submitted');"></form> -->
+                        <!-- <form action="javascript:;" onsubmit="myFunction(this)">   -->
+                        <!-- <form action="#" onsubmit="return validateFormOnSubmit(this);">     -->
+                        <form action="#" onsubmit="return validateForm(this);" class="register-form" id="register-form">
                             <div class="form-group">
                                 <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                                <input type="text" id="name" onKeyPress="newValueKeyPress(id)" onKeyUp="newValueKeyPress(id)" placeholder="Your Name"/>
+                                <input class="input-form" type="text" id="name" onKeyPress="newValueKeyPress(id)" onKeyUp="newValueKeyPress(id)" placeholder="Your Name"/>
                             </div>
                             <div class="form-group">
                               <label for="email"><i class="zmdi zmdi-email"></i></label>
-                              <input type="email" id="email" onKeyPress="newValueKeyPress(id)" onKeyUp="newValueKeyPress(id)" placeholder="Your Email"/>
+                              <input type="text" id="email" onKeyPress="newValueKeyPress(id)" onKeyUp="newValueKeyPress(id)" placeholder="Your Email"/>
                             </div>
                             <div class="form-group">
                               <label for="phone"><i class="zmdi zmdi-smartphone-iphone"></i></label>
-                              <input type="tel" id="phone" onKeyPress="newValueKeyPress(id)" onKeyUp="newValueKeyPress(id)" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" placeholder="Your Phone Number" required/>
+                              <input type="tel" id="phone" onKeyPress="newValueKeyPress(id)" onKeyUp="newValueKeyPress(id)"  placeholder="Your Phone Number"/>
                             </div>
-                            <div class="form-group">
+                            <!-- <div class="form-group-icon">
+                                <div class="autocomplete" style="display:inline-block; width:49%">
+                                  <label for="departure2"><i class="zmdi zmdi-flight-takeoff"></i></label>
+                                  <input id="departure2" autocomplete="off" type="text" placeholder="Departure"/>
+                                </div>
+                                <div class="autocomplete" style="display:inline-block; width:49%">
+                                  <label for="arrival2"><i class="zmdi zmdi-flight-land"></i></label>
+                                  <input id="arrival2" autocomplete="off" type="text" placeholder="Arrival"/>
+                                </div>
+                            </div> -->
+                            <div class="form-group-icon">
+                                <div style="display:inline-block; width:49%">
+                                  <label for="departure"><i class="zmdi zmdi-flight-takeoff"></i></label>
+                                  <input id="departure" autocomplete="off" type="text" placeholder="Departure"/>
+                                </div>
+                                <div style="display:inline-block; width:49%">
+                                  <label for="arrival"><i class="zmdi zmdi-flight-land"></i></label>
+                                  <input id="arrival" autocomplete="off" type="text" placeholder="Arrival"/>
+                                </div>
+                            </div>
+                            <div class="form-group-icon">
                                 <label for="carrier"><i class="zmdi zmdi-airplane"></i></label>
-                                <input type="text" id="carrier" onKeyPress="newValueKeyPress(id)" onKeyUp="newValueKeyPress(id)" placeholder="Airline Company"/>
+                                <input type="text" id="carrier" autocomplete="off" onKeyPress="newValueKeyPress(id)" onKeyUp="newValueKeyPress(id)" placeholder="Airline Company"/>
                             </div>
                             <div class="form-group">
                                 <label for="flightNumber"><i class="zmdi zmdi-account-box"></i></label>
@@ -60,37 +83,22 @@
                             <div class="form-group">
                                 <label for="flightDate"><i class="zmdi zmdi-calendar"></i></label>
                                 <div id="inline" data-date="01/05/2020">
-                                    <input type="text" name="flightDate" placeholder="Flight Date">
+                                    <input type="text" id="flightDate" name="flightDate" placeholder="Flight Date">
                                 </div>
-                            </div>
-                            <div class="form-group-icon">
-                                <!-- TO FIX ICON  -->
-                                <div style="display:inline-block; width:49%">
-                                  <label for="departure"><i class="zmdi zmdi-flight-takeoff"></i></label>
-                                  <input id="autocomplete" type="text" placeholder="Departure"/>
-                                </div>
-                                <div style="display:inline-block; width:49%">
-                                  <!-- <label for="arrival"><i class="zmdi zmdi-flight-land"></i></label> -->
-                                  <input id="autocomplete" type="text" placeholder="Arrival"/>
-                                </div>
-                                <!-- END FIX ICON -->
                             </div>
                             <div class="form-group">
                               <label for="ETHaddress"><i class="zmdi zmdi-play-for-work"></i></label>
                               <input type="text" name="ETHaddress" id="ETHaddress" onKeyPress="newValueKeyPress(id)" onKeyUp="newValueKeyPress(id)" placeholder="Ethereum Address"/>
                             </div>
-                            <div class="form-group">
-                                <input type="checkbox" name="agree-term" id="agree-term" class="agree-term" />
-                                <label for="agree-term" class="label-agree-term"><span><span></span></span>I agree all statements in  <a href="#" class="term-service">Terms of service</a></label>
-                            </div>
+                            <div id="output"></div>
                             <div class="form-group form-button">
                                 <input type="submit" name="signup" id="signup" class="form-submit" value="Submit"/>
+                                <!-- <form name="myForm" action="/action_page.php" onsubmit="return validateForm()" method="post"></form> -->
                             </div>
                         </form>
                     </div>
                     <div class="signup-image">
-                        <figure><img src="images/airport-concept-illustration_114360-1178.jpg"  width="400px" alt="sing up image"></figure>
-                        <a href="#" class="signup-image-link">I am already member</a>
+                        <figure class="signup-image-inside"><img src="images/airport-concept-illustration_114360-1178.jpg" width="400px" alt="sing up image"></figure>
                     </div>
                 </div>
             </div>
@@ -151,6 +159,7 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.16.1/lodash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://unpkg.com/fuse.js@2.5.0/src/fuse.min.js"></script>
     <script src="https://screenfeedcontent.blob.core.windows.net/html/airports.js"></script>
 
@@ -164,6 +173,8 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/web3.min.js"></script>
     <script src="js/truffle-contract.js"></script>
+    <script src="data/airlines.js"></script>
+    <script src="data/major-airlines.js"></script>
     <script src="js/app.js"></script>
   </body>
 </html>
