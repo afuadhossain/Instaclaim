@@ -185,9 +185,20 @@ h2 {
   font-family: Poppins;
   font-size: 36px; }
 
+h3 {
+  line-height: 1.66;
+  margin: 0;
+  padding: 0;
+  font-weight: bold;
+  color: #222;
+  font-family: Poppins;
+  font-size: 16px; }
+
 .main {
   background: #f8f8f8;
-  padding: 150px 0; }
+  padding-top: 150px;
+  padding-bottom: 10px; }
+  /* padding: 0 0; } */
 
 .clear {
   clear: both; }
@@ -259,6 +270,9 @@ body {
   width: 50%;
   overflow: hidden; }
 
+.signup-form-dev, .signup-image-dev, .signin-form-dev, .signin-image-dev {
+  width: 100%; }
+
 .signup-image {
   margin: 0 0px; }
 
@@ -272,6 +286,9 @@ body {
 
 .form-title {
   margin-bottom: 33px; }
+
+.form-title-dev {
+  margin-bottom: 10px; }
 
 .signup-image {
   margin-top: 45px; }
@@ -293,6 +310,22 @@ figure {
   -o-border-radius: 5px;
   -ms-border-radius: 5px;
   margin-top: 25px;
+  cursor: pointer; }
+  .form-submit:hover {
+    background: #4292dc; }
+
+.form-submit-dev {
+  display: inline-block;
+  background: #6dabe4;
+  color: #fff;
+  border-bottom: none;
+  width: auto;
+  padding: 8px 25px;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -o-border-radius: 5px;
+  -ms-border-radius: 5px;
   cursor: pointer; }
   .form-submit:hover {
     background: #4292dc; }
@@ -331,6 +364,13 @@ figure {
   .form-group:last-child {
     margin-bottom: 0px; }
 
+.form-group-dev-icon {
+  position: relative;
+  margin-bottom: 25px; 
+  width: 33%; }
+  .form-group:last-child {
+    margin-bottom: 0px; }
+
 .form-group-smaller {
   position: relative;
   width: 50%;
@@ -339,6 +379,13 @@ figure {
   .form-group-smaller:last-child {
     margin-bottom: 0px; }
     
+.form-group-dev {
+  position: relative;
+  margin-bottom: 25px;
+  overflow: hidden; 
+  width: 33%; }
+  .form-group-dev:last-child {
+    margin-bottom: 0px; }
 
 input {
   width: 100%;
@@ -670,7 +717,6 @@ label.valid {
 .autocomplete {
   /*the container must be positioned relative:*/
   position: relative;
-  display: inline-block;
 }
 .autocomplete-items {
   position: absolute;

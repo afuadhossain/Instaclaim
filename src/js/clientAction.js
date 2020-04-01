@@ -1,3 +1,5 @@
+flightList = {};
+
 var customer = {
   name : "",
   email : "",
@@ -7,13 +9,9 @@ var customer = {
   flightDate : "",
   departure : "",
   arrival : "",
-  ETHaddress : ""
-}
-
-var flightInfo = {
-  flightID : "",
-}
-
+  ETHaddress : "",
+  ID : -1,
+};
 
 function validatePhoneNumber(inputtxt) {
   var phoneno = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
@@ -51,12 +49,13 @@ function validateFlightNumber(code)
 }
 
 function checkValidity(id){
-    console.log('id', id);
     var element = document.getElementById(id);
     var value = element.value;
 
     if (value.length <= 0) {
-      element.setCustomValidity('The entry is required');
+      if (!(["flightDate", "arrival", "departure", "carrier"].includes(id))) {
+        element.setCustomValidity('The entry is required');
+      }
       element.className = "input-form-invalid";
       return false;
     }
@@ -98,13 +97,13 @@ function checkValidity(id){
           return false;
         }
       case "carrier":
-        customer.carrier = value;
-        break;
+        customer.carrier = value.toUpperCase();
+        return true;
       case "flightNumber":
         if (validateFlightNumber(value)){
           element.setCustomValidity('');
           element.className = "input-form-valid";
-          customer.flightNumber = value;
+          customer.flightNumber = value.toUpperCase();
           return true;
         }
         else {
@@ -114,46 +113,62 @@ function checkValidity(id){
         }
       case "flightDate":
         customer.flightDate = value;
-        break;
+        return true;
       case "departure":
         customer.departure = value;
-        break;
+        return true;
       case "arrival":
         customer.arrival = value;
-        break;
+        return true;
       case "ETHaddress":
         customer.ETHaddress = value;
-        break;
+        return true;
       default: return false;
     }
 }
 
-function validateForm() {
-  console.log("click submit")
-  var keys = Object.keys(customer);
-  
-  keys.forEach(function (key, index) {
-    checkValidity(key);
-  });
-  
+function newValueKeyPress(id) {
+  var element = document.getElementById(id);
+
+  if (!element.reportValidity()){
+    checkValidity(id);
+  }
 }
 
-function newValueKeyPress(id) {
-    var element = document.getElementById(id);
-
-    var valid = true;
-    if (!element.reportValidity()){
-      valid = checkValidity(id);
+function validateForm() {
+  var keys = Object.keys(customer);
+  
+  var documentInvalid = false;
+  keys.filter(key => key != "ID").forEach(function (key, index) {
+    if(!checkValidity(key)) {
+      document.getElementById(key).reportValidity();
+      documentInvalid = true;
     }
+  });
+
+  if (documentInvalid)
+    return false;
+    
+  customer.ID = Date.now();
+
+  console.log(customer);
+
+  var flightID = createFlightID(customer.carrier, customer.flightNumber, customer.flightDate);
+
+  if (!(flightID in flightList)) {
+    flightList[flightID] = [customer];
+  } else {
+    flightList[flightID].push(customer);
+  }
+
+  document.getElementById("devPage").style.display = "block";
+  
 }
 
 function createFlightID(carrier, flightNumber, flightDate) {
+  flightDate = flightDate.replace(/\//g, ".");
   var flightID = "" + carrier + "." + flightNumber + "." + flightDate;
-  var flightIDencoded = web3.fromAscii(flightID);
-
-// web3.toAscii(val)
-  
-  return flightIDencoded;
+  return flightID;
 }
 
 var optionsAirport = {
@@ -343,7 +358,7 @@ function autocompleteAirlines(htmlID, side){
 
   function selectIndex(index) {
     if (results.length >= index + 1) {
-      if (iata != "")
+      if (results[index].iata != "")
         ac.val(results[index].iata);
       else 
         ac.val(results[index].icao);
@@ -416,169 +431,21 @@ function autocompleteAirlines(htmlID, side){
 
 autocompleteAirlines("carrier", "left");
 
+
+
 // Create datepicker element
 const elem = document.querySelector('input[name="flightDate"]');
 const datepicker = new Datepicker(elem, {
       // options here
 });
 
-App = {
-  web3Provider: null,
-  contracts: {},
-
-  init: function() {
-    return App.initWeb3();
-  },
-
-  initWeb3: async function() {
-    
-    // Modern dapp browsers...
-    if (window.ethereum) {
-      App.web3Provider = window.ethereum;
-      try {
-        // Request account access
-        await window.ethereum.enable();
-      } catch (error) {
-        // User denied account access...
-        console.error("User denied account access")
-      }
-    }
-    // Legacy dapp browsers...
-    else if (window.web3) {
-      App.web3Provider = window.web3.currentProvider;
-    }
-    // If no injected web3 instance is detected, fall back to Ganache
-    else {
-      App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
-    }
-    web3 = new Web3(App.web3Provider);
-    
-    return App.initContract();
-  },
-
-  initContract: function() {
-    $.getJSON("FlightCompensation.json", function(data) {
-      // Instantiate a new truffle contract from the artifact
-      App.contracts.FlightCompensation = TruffleContract(data);
-      // Connect provider to interact with contract
-      App.contracts.FlightCompensation.setProvider(App.web3Provider);
-        
-      // App.callFunctionsTest();
-
-    });
-  },
-
-  callFunctionsTest: async function() {
-
-    App.createClaim();
-
-    await new Promise(r => setTimeout(r, 30000));
-
-    App.updateFlight();
-
-  },
-
-  // Listen for events emitted from the contract
-  createClaim: function() {
-    
-    flightInfo.flightID = createFlightID(customer.carrier, customer.flightNumber, customer.flightDate);
-
-    web3.eth.getAccounts(function(error, accounts) {
-      if (error) {
-        console.log(error);
-      }
-
-      var account = accounts[0];
-      var contractAddress = App.contracts.FlightCompensation.deployed().address
-
-      //Send money to fallback function
-    //   web3.eth.sendTransaction({
-    //     to: contractAddress, 
-    //     from: account, 
-    //     value:web3.toWei("0.005", "ether")
-    //   },function(error, result){
-    //     if(error)
-    //         console.error(error);
-    //  })
-
-      App.contracts.FlightCompensation.deployed().then(function(compensationInstance) {
-        // Send money to deposit function
-        compensationInstance.deposit.sendTransaction({
-          from: account, 
-          value : web3.toWei("10", "ether")
-        });
-
-        dummyAddress = "0x0E667EAD48249e38B71c0d7Cc65bFBA3e724bEC4" //Will have to change that
-        // Execute adopt as a transaction by sending account
-
-        return compensationInstance.addNewClaim(
-          123,
-          flightInfo.flightID,
-          1,
-          301,
-          601,
-          901,
-          dummyAddress,
-          {from: account});
-      }).then(function(result) {
-        console.log(result)
-      }).catch(function(err) {   
-        console.log(err.message);
-      });
-    });
-  },
-
-  updateFlight: function() {
-
-    web3.eth.getAccounts(function(error, accounts) {
-      if (error) {
-        console.log(error);
-      }
-
-      var account = accounts[0];
-
-      App.contracts.FlightCompensation.deployed().then(function(compensationInstance) {
-      return compensationInstance.updateFlightStatus("0x7465737400000000000000000000000000000000000000000000000000000000",650, {from: account});
-      }).then(function(result) {
-        console.log(result)
-      }).catch(function(err) {   
-        console.log(err.message);
-      });
-
-    });
-  },
-
-  bindEvents: function() {
-    $(document).on('click', '.btn-adopt', App.handleAdopt);
-  },
-
-  markAdopted: function(adopters, account) {
-    /*
-     * Replace me...
-     */
-  },
-
-  handleAdopt: function(event) {
-    event.preventDefault();
-
-    var petId = parseInt($(event.target).data('id'));
-
-    /*
-     * Replace me...
-     */
-  }
-
-};
-
-$(function() {
-  $(window).on('load', function(){
-    App.init();
-  });
-});
 
 window.ValidateInputs = function(){
   alert('Validate called succesfully');    
 }
+
+
+
 
 function autocomplete2(inp, arr) {
   /*the autocomplete function takes two arguments,

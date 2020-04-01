@@ -39,10 +39,12 @@
                         <!-- <form action="javascript:alert('Hello there, I am being submitted');"></form> -->
                         <!-- <form action="javascript:;" onsubmit="myFunction(this)">   -->
                         <!-- <form action="#" onsubmit="return validateFormOnSubmit(this);">     -->
-                        <form action="#" onsubmit="return validateForm(this);" class="register-form" id="register-form">
+                        <!-- <form action="#" onsubmit="return validateForm(this);" class="register-form" id="register-form"> -->
+                        <form action="#" onsubmit="return false;" class="register-form" id="register-form">
+                        <!-- <form action="#" autocomplete="off" onsubmit="return false;" class="register-form" id="register-form"> -->
                             <div class="form-group">
                                 <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                                <input class="input-form" type="text" id="name" onKeyPress="newValueKeyPress(id)" onKeyUp="newValueKeyPress(id)" placeholder="Your Name"/>
+                                <input type="text" id="name" onKeyPress="newValueKeyPress(id)" onKeyUp="newValueKeyPress(id)" placeholder="Your Name"/>
                             </div>
                             <div class="form-group">
                               <label for="email"><i class="zmdi zmdi-email"></i></label>
@@ -92,7 +94,7 @@
                             </div>
                             <div id="output"></div>
                             <div class="form-group form-button">
-                                <input type="submit" name="signup" id="signup" class="form-submit" value="Submit"/>
+                                <input type="submit" name="signup" id="signup" class="form-submit" onclick="validateForm(this);" value="Submit"/>
                                 <!-- <form name="myForm" action="/action_page.php" onsubmit="return validateForm()" method="post"></form> -->
                             </div>
                         </form>
@@ -107,48 +109,65 @@
             </div>
         </section>
 
-        <!-- Sing in  Form -->
-        <section class="sign-in">
-          <div class="container">
-              <div class="signin-content">
-                  <div class="signin-image">
-
-
-                      - Update Flight Status
-                  </div>
-
-                  <div class="signin-form">
-                    - Display address <br>
-                    - Display amount of ether
-                      <h2 class="form-title">Automated flight-delay compensation</h2>
-                      <form method="POST" class="register-form" id="login-form">
-                          <div class="form-group">
-                              <label for="your_name"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                              <input type="text" name="your_name" id="your_name" placeholder="Your Name"/>
-                          </div>
-                          <div class="form-group">
-                              <label for="your_pass"><i class="zmdi zmdi-lock"></i></label>
-                              <input type="password" name="your_pass" id="your_pass" placeholder="Password"/>
-                          </div>
-                          <div class="form-group">
-                              <input type="checkbox" name="remember-me" id="remember-me" class="agree-term" />
-                              <label for="remember-me" class="label-agree-term"><span><span></span></span>Remember me</label>
-                          </div>
-                          <div class="form-group form-button">
-                              <input type="submit" name="signin" id="signin" class="form-submit" value="Log in"/>
-                          </div>
-                      </form>
-                      <div class="social-login">
-                          <span class="social-label">Or login with</span>
-                          <ul class="socials">
-                              <li><a href="#"><i class="display-flex-center zmdi zmdi-facebook"></i></a></li>
-                              <li><a href="#"><i class="display-flex-center zmdi zmdi-twitter"></i></a></li>
-                              <li><a href="#"><i class="display-flex-center zmdi zmdi-google"></i></a></li>
-                          </ul>
-                      </div>
-                  </div>
-              </div>
-          </div>
+        <section style="display:none" id="devPage" class="signup">
+            <div class="container">
+                <div class="signup-content">
+                    <div class="signup-form signup-form-dev">
+                        <h2 class="form-title">Developper Console</h2>
+                        <!-- <form action="javascript:alert('Hello there, I am being submitted');"></form> -->
+                        <!-- <form action="javascript:;" onsubmit="myFunction(this)">   -->
+                        <form autocomplete="off" action="#" onsubmit="return false;" class="register-form" id="register-form">
+                            <h3 class="form-title form-title-dev">Set Flight Time</h3>
+                            <div class="form-group-dev-icon autocomplete">
+                                <label><i class="zmdi zmdi-account material-icons-name"></i></label>
+                                <input type="text" id="setFlightID" onKeyPress="newValueKeyPressFlightTime(id)" onKeyUp="newValueKeyPressFlightTime(id)" placeholder="FlightID"/>
+                            </div>
+                            <div class="form-group-dev">
+                                <label><i class="zmdi zmdi-email"></i></label>
+                                <input type="text" id="flightTimeDev" onKeyPress="newValueKeyPressFlightTime(id)" onKeyUp="newValueKeyPressFlightTime(id)" placeholder="Flight Time (HH:MM)"/>
+                            </div>
+                            <div class="form-group-dev form-button">
+                                <input type="submit" onclick="setFlightTime()" class="form-submit-dev" value="Send"/>
+                                <!-- <form name="myForm" action="/action_page.php" onsubmit="return validateForm()" method="post"></form> -->
+                            </div>
+                            <h3 class="form-title form-title-dev">Update Flight Status (Not yet implemented)</h3>
+                            <div class="form-group-dev">
+                              <label for="phone"><i class="zmdi zmdi-smartphone-iphone"></i></label>
+                              <input type="tel" id="phone" onKeyPress="newValueKeyPress(id)" onKeyUp="newValueKeyPress(id)"  placeholder="Your Phone Number"/>
+                            </div>
+                            <div class="form-group-dev-icon">
+                                <div style="display:inline-block; width:49%">
+                                  <label for="departure"><i class="zmdi zmdi-flight-takeoff"></i></label>
+                                  <input id="departure" autocomplete="off" type="text" placeholder="Departure"/>
+                                </div>
+                                <div style="display:inline-block; width:49%">
+                                  <label for="arrival"><i class="zmdi zmdi-flight-land"></i></label>
+                                  <input id="arrival" autocomplete="off" type="text" placeholder="Arrival"/>
+                                </div>
+                            </div>
+                            <div class="form-group-dev-icon">
+                                <label for="carrier"><i class="zmdi zmdi-airplane"></i></label>
+                                <input type="text" id="carrier" autocomplete="off" onKeyPress="newValueKeyPress(id)" onKeyUp="newValueKeyPress(id)" placeholder="Airline Company"/>
+                            </div>
+                            <div class="form-group-dev">
+                                <label for="flightNumber"><i class="zmdi zmdi-account-box"></i></label>
+                                <input type="text" id="flightNumber" onKeyPress="newValueKeyPress(id)" onKeyUp="newValueKeyPress(id)" placeholder="Flight Number"/>
+                            </div>
+                            <div class="form-group-dev">
+                                <label for="flightDate"><i class="zmdi zmdi-calendar"></i></label>
+                                <div id="inline" data-date="01/05/2020">
+                                    <input type="text" id="flightDate" name="flightDate" placeholder="Flight Date">
+                                </div>
+                            </div>
+                            <div id="output"></div>
+                            <div class="form-group-dev form-button">
+                                <input type="submit" name="signup" id="signup" class="form-submit" value="Submit"/>
+                                <!-- <form name="myForm" action="/action_page.php" onsubmit="return validateForm()" method="post"></form> -->
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </section>
     </div>
 
@@ -175,6 +194,8 @@
     <script src="js/truffle-contract.js"></script>
     <script src="data/airlines.js"></script>
     <script src="data/major-airlines.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/clientAction.js"></script>
+    <script src="js/developperAction.js"></script>
+    <script src="js/smartContractAction.js"></script>
   </body>
 </html>
