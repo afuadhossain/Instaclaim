@@ -13,6 +13,48 @@ var customer = {
   ID : -1,
 };
 
+var optionsAirport = {
+  shouldSort: true,
+  threshold: 0.4,
+  maxPatternLength: 32,
+  keys: [{
+    name: 'iata',
+    weight: 0.5
+  }, {
+    name: 'name',
+    weight: 0.3
+  }, {
+    name: 'city',
+    weight: 0.2
+  }]
+};
+
+var optionsAirlines = {
+  shouldSort: true,
+  threshold: 0.4,
+  maxPatternLength: 32,
+  keys: [{
+    name: 'iata',
+    weight: 0.5
+  }, {
+    name: 'name',
+    weight: 0.25
+  }, {
+    name: 'icao',
+    weight: 0.25
+  }]
+};
+
+var fuseAirport = new Fuse(airports, optionsAirport)
+var fuseAirline = new Fuse(airlines, optionsAirlines)
+
+// Create datepicker element
+const elem = document.querySelector('input[id="flightDate"]');
+const datepicker = new Datepicker(elem, {
+    autohide: true,
+    clearBtn: true,
+});
+
 function validatePhoneNumber(inputtxt) {
   var phoneno = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
   if (inputtxt.match(phoneno)) 
@@ -21,7 +63,7 @@ function validatePhoneNumber(inputtxt) {
     return false;
 }
 
-function validateEmail(mail) 
+function validateEmail(mail)
 {
   var emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   if (mail.match(emailRegex)) 
@@ -48,9 +90,55 @@ function validateFlightNumber(code)
     return false;
 }
 
+function validateETHaddress(ETHaddress)
+{
+  if (web3.isAddress(ETHaddress))
+    return true;
+  else 
+    return false;
+}
+
+function validateAirport(iata)
+{
+  for (key in airports){
+    if (airports[key].iata.toUpperCase() == iata.toUpperCase())
+      return true;
+  }
+  return false;
+}
+
+function validateAirline(iata)
+{
+  
+  for (key in airlines) {
+    if (iata.length == 2) {
+      if (airlines[key].iata != "" &&
+                airlines[key].iata.toUpperCase() == iata.toUpperCase()) {
+        return true;
+      }
+    }
+    else if (iata.length == 3) {
+      if (airlines[key].icao != "" &&
+                airlines[key].icao.toUpperCase() == iata.toUpperCase()) {
+        return true;
+      }
+    }
+    else 
+      return false;
+  }
+  return false;
+}
+
+function validateDate(date)
+{
+  var today = new Date();
+  log.console(today)
+  return false;
+}
+
 function checkValidity(id){
     var element = document.getElementById(id);
-    var value = element.value;
+    var value = element.value.trim();
 
     if (value.length <= 0) {
       if (!(["flightDate", "arrival", "departure", "carrier"].includes(id))) {
@@ -65,7 +153,7 @@ function checkValidity(id){
         if (validateName(value)){
           element.setCustomValidity('');
           element.className = "input-form-valid";
-          customer.name = value
+          customer.name = value;
           return true;
         } else {
           element.setCustomValidity('Enter a valid name');
@@ -97,8 +185,15 @@ function checkValidity(id){
           return false;
         }
       case "carrier":
-        customer.carrier = value.toUpperCase();
-        return true;
+        if (validateAirline(value)){
+          element.className = "input-form-valid";
+          customer.carrier = value.toUpperCase();
+          return true;
+        }
+        else {
+          element.className = "input-form-invalid";
+          return false;
+        }
       case "flightNumber":
         if (validateFlightNumber(value)){
           element.setCustomValidity('');
@@ -112,17 +207,55 @@ function checkValidity(id){
           return false;
         }
       case "flightDate":
-        customer.flightDate = value;
-        return true;
+        if (validateDate(value)){
+          element.className = "input-form-valid";
+          customer.flightDate = value;
+          return true;
+        }
+        else{
+          element.className = "input-form-invalid";
+          return false;
+        }
       case "departure":
-        customer.departure = value;
-        return true;
+        if (validateAirport(value)){
+          element.className = "input-form-valid";
+          customer.departure = value.toUpperCase();
+          if (customer.departure == customer.arrival){
+            element.className = "input-form-invalid";
+            return false
+          } 
+          else return true;
+        }
+        else {
+          element.className = "input-form-invalid";
+          return false;
+        }
       case "arrival":
-        customer.arrival = value;
-        return true;
+        if (validateAirport(value)){
+          element.className = "input-form-valid";
+          customer.arrival = value.toUpperCase();
+          if (customer.departure == customer.arrival){
+            element.className = "input-form-invalid";
+            return false
+          } 
+          else return true;
+        }
+        else {
+          element.className = "input-form-invalid";
+          return false;
+        }
       case "ETHaddress":
-        customer.ETHaddress = value;
-        return true;
+        if (validateETHaddress(value)) {
+          element.setCustomValidity('');
+          element.className = "input-form-valid";
+          customer.ETHaddress = value;
+          return true;
+        }
+        else {
+          element.setCustomValidity('Enter a valid ETH address');
+          element.className = "input-form-invalid";
+          return false;
+        }
       default: return false;
     }
 }
@@ -130,30 +263,10 @@ function checkValidity(id){
 function newValueKeyPress(id) {
   var element = document.getElementById(id);
 
-  if (!element.reportValidity()){
+  if (!element.reportValidity()) {
     checkValidity(id);
   }
 }
-
-var optionsAirport = {
-  shouldSort: true,
-  threshold: 0.4,
-  maxPatternLength: 32,
-  keys: [{
-    name: 'iata',
-    weight: 0.5
-  }, {
-    name: 'name',
-    weight: 0.3
-  }, {
-    name: 'city',
-    weight: 0.2
-  }]
-};
-
-var fuseAirport = new Fuse(airports, optionsAirport)
-
-
 
 function autocompleteAirport(htmlID, side){
   var ac = $('#' + htmlID)
@@ -190,7 +303,6 @@ function autocompleteAirport(htmlID, side){
   
   $(document)
     .on('click', function(e) {
-      if (ac[0] != e.target)
       clearResults;
     });
 
@@ -204,12 +316,13 @@ function autocompleteAirport(htmlID, side){
     if (results.length >= index + 1) {
       ac.val(results[index].iata);
       clearResults();
+      checkValidity(htmlID);
     }  
   }
 
   var results = [];
   var numResults = 0;
-  var selectedIndex = -1;
+  var selectedIndex = 0;
 
   function search(e) {
     if (e.which === 38 || e.which === 13 || e.which === 40) {
@@ -229,6 +342,10 @@ function autocompleteAirport(htmlID, side){
       
       list.html(divs.join(''))
 
+      selectedIndex = 0;
+      if (list[0].children.length > 0)
+        list[0].children[selectedIndex].classList.add("autocomplete-hover");
+
     } else {
       numResults = 0;
       list.empty();
@@ -240,15 +357,15 @@ function autocompleteAirport(htmlID, side){
     switch(e.which) {
       case 38: // up
         selectedIndex--;
-        if (selectedIndex <= -1) {
-          selectedIndex = -1;
-        } else {
-          if (list[0].children.length) {
-            for (var i = 0; i < list[0].children.length; i++) {
-              list[0].children[i].classList.remove("autocomplete-hover")
-            }
-            list[0].children[selectedIndex].classList.add("autocomplete-hover")
+        if (selectedIndex <= 0) {
+          selectedIndex = 0;
+        } 
+
+        if (list[0].children.length) {
+          for (var i = 0; i < list[0].children.length; i++) {
+            list[0].children[i].classList.remove("autocomplete-hover")
           }
+          list[0].children[selectedIndex].classList.add("autocomplete-hover")
         }
         break;
       case 13: // enter
@@ -277,28 +394,6 @@ function autocompleteAirport(htmlID, side){
     e.preventDefault(); // prevent the default action (scroll / move caret)
   }
 }
-
-autocompleteAirport("departure", "left");
-autocompleteAirport("arrival", "right");
-
-
-var optionsAirlines = {
-  shouldSort: true,
-  threshold: 0.4,
-  maxPatternLength: 32,
-  keys: [{
-    name: 'iata',
-    weight: 0.5
-  }, {
-    name: 'name',
-    weight: 0.4
-  }, {
-    name: 'country',
-    weight: 0.10
-  }]
-};
-var fuseAirline = new Fuse(airlines, optionsAirlines)
-
 
 function autocompleteAirlines(htmlID, side){
   var ac = $('#' + htmlID)
@@ -325,9 +420,9 @@ function autocompleteAirlines(htmlID, side){
       if (!isNaN(index)) {
         if (list[0].children.length) {
           for (var i = 0; i < list[0].children.length; i++) {
-            list[0].children[i].classList.remove("autocomplete-hover")
+            list[0].children[i].classList.remove("autocomplete-hover");
           }
-          list[0].children[index].classList.add("autocomplete-hover")
+          list[0].children[index].classList.add("autocomplete-hover");
         }
       }
     })
@@ -335,8 +430,7 @@ function autocompleteAirlines(htmlID, side){
 
   $(document)
   .on('click', function(e) {
-    if (ac[0] != e.target)
-    clearResults;
+    clearResults();
   });
 
   function clearResults() {
@@ -352,12 +446,13 @@ function autocompleteAirlines(htmlID, side){
       else 
         ac.val(results[index].icao);
       clearResults();
+      checkValidity(htmlID);
     }  
   }
 
   var results = [];
   var numResults = 0;
-  var selectedIndex = -1;
+  var selectedIndex = 0;
 
   function search(e) {
     if (e.which === 38 || e.which === 13 || e.which === 40) {
@@ -376,7 +471,11 @@ function autocompleteAirlines(htmlID, side){
               + '</div>';
       });
       
-      list.html(divs.join(''))
+      list.html(divs.join(''));
+
+      selectedIndex = 0;
+      if (list[0].children.length > 0)
+        list[0].children[selectedIndex].classList.add("autocomplete-hover");
 
     } else {
       numResults = 0;
@@ -389,15 +488,15 @@ function autocompleteAirlines(htmlID, side){
     switch(e.which) {
       case 38: // up
         selectedIndex--;
-        if (selectedIndex <= -1) {
-          selectedIndex = -1;
-        } else {
-          if (list[0].children.length) {
-            for (var i = 0; i < list[0].children.length; i++) {
-              list[0].children[i].classList.remove("autocomplete-hover")
-            }
-            list[0].children[selectedIndex].classList.add("autocomplete-hover")
+        if (selectedIndex <= 0) {
+          selectedIndex = 0;
+        }
+
+        if (list[0].children.length) {
+          for (var i = 0; i < list[0].children.length; i++) {
+            list[0].children[i].classList.remove("autocomplete-hover")
           }
+          list[0].children[selectedIndex].classList.add("autocomplete-hover")
         }
         break;
       case 13: // enter
@@ -427,18 +526,6 @@ function autocompleteAirlines(htmlID, side){
   }
 }
 
-autocompleteAirlines("carrier", "left");
-
-
-
-// Create datepicker element
-const elem = document.querySelector('input[name="flightDate"]');
-const datepicker = new Datepicker(elem, {
-      // options here
-});
-
-
-
 function createFlightID(carrier, flightNumber, flightDate) {
   flightDate = flightDate.replace(/\//g, ".");
   var flightID = "" + carrier + "." + flightNumber + "." + flightDate;
@@ -459,7 +546,14 @@ function validateForm() {
   if (documentInvalid)
     return false;
     
+  //Use the current time (up to ms) customer ID
   customer.ID = Date.now();
+
+  //Replacing with the upper case values
+  $('#flightNumber').val(customer.flightNumber); 
+  $('#departure').val(customer.departure);
+  $('#arrival').val(customer.arrival);
+  $('#carrier').val(customer.carrier);
 
   console.log(customer);
 
@@ -476,130 +570,7 @@ function validateForm() {
 }
 
 
-window.ValidateInputs = function(){
-  alert('Validate called succesfully');    
-}
+autocompleteAirport("departure", "left");
+autocompleteAirport("arrival", "right");
+autocompleteAirlines("carrier", "left");
 
-
-
-
-function autocomplete2(inp, arr) {
-  /*the autocomplete function takes two arguments,
-  the text field element and an array of possible autocompleted values:*/
-  var currentFocus;
-  /*execute a function when someone writes in the text field:*/
-  inp.addEventListener("input", function(e) {
-      var a, b, i, val = this.value;
-      /*close any already open lists of autocompleted values*/
-      closeAllLists();
-      if (!val) { return false;}
-      currentFocus = -1;
-      /*create a DIV element that will contain the items (values):*/
-      a = document.createElement("DIV");
-      a.setAttribute("id", this.id + "autocomplete-list");
-      a.setAttribute("class", "autocomplete-items");
-      /*append the DIV element as a child of the autocomplete container:*/
-      this.parentNode.appendChild(a);
-      var nbElements = 0;
-      /*for each item in the array...*/
-      for (i = 0; i < arr.length; i++) {
-        /*check if the item starts with the same letters as the text field value:*/
-        if (arr[i].name.substr(0, val.length).toUpperCase() == val.toUpperCase()
-            || arr[i].city.substr(0, val.length).toUpperCase() == val.toUpperCase()
-              || arr[i].iata.substr(0, val.length).toUpperCase() == val.toUpperCase()) {
-                // ||arr[i].country.substr(0, val.length).toUpperCase() == val.toUpperCase()) {
-          /*create a DIV element for each matching element:*/
-          b = document.createElement("DIV");
-          nbElements += 1;
-
-          if (arr[i].iata.substr(0, val.length).toUpperCase() == val.toUpperCase()) {
-            /*make the matching letters bold:*/
-            b.innerHTML += "<strong>" + arr[i].iata.substr(0, val.length) + "</strong>";
-            b.innerHTML += arr[i].iata.substr(val.length);
-          } else {
-            b.innerHTML += arr[i].iata;
-          }
-          b.innerHTML += " - ";
-
-          if (arr[i].name.substr(0, val.length).toUpperCase() == val.toUpperCase()) {
-            b.innerHTML += "<strong>" + arr[i].name.substr(0, val.length) + "</strong>";
-            b.innerHTML += arr[i].name.substr(val.length);
-          } else {
-            b.innerHTML += arr[i].name;
-          }
-
-          /*insert a input field that will hold the current array item's value:*/
-          b.innerHTML += "<input type='hidden' value='" + arr[i].iata + "'>";
-
-          /*execute a function when someone clicks on the item value (DIV element):*/
-          b.addEventListener("click", function(e) {
-            /*insert the value for the autocomplete text field:*/
-            inp.value = this.getElementsByTagName("input")[0].value;
-            console.log(inp.value)
-            /*close the list of autocompleted values,
-            (or any other open lists of autocompleted values:*/
-            closeAllLists();
-          });
-          a.appendChild(b);
-        }
-
-        if (nbElements > 9)
-          break;
-      }
-  });
-  /*execute a function presses a key on the keyboard:*/
-  inp.addEventListener("keydown", function(e) {
-      var x = document.getElementById(this.id + "autocomplete-list");
-      if (x) x = x.getElementsByTagName("div");
-      if (e.keyCode == 40) {
-        /*If the arrow DOWN key is pressed,
-        increase the currentFocus variable:*/
-        currentFocus++;
-        /*and and make the current item more visible:*/
-        addActive(x);
-      } else if (e.keyCode == 38) { //up
-        /*If the arrow UP key is pressed,
-        decrease the currentFocus variable:*/
-        currentFocus--;
-        /*and and make the current item more visible:*/
-        addActive(x);
-      } else if (e.keyCode == 13) {
-        /*If the ENTER key is pressed, prevent the form from being submitted,*/
-        e.preventDefault();
-        if (currentFocus > -1) {
-          /*and simulate a click on the "active" item:*/
-          if (x) x[currentFocus].click();
-        }
-      }
-  });
-  function addActive(x) {
-    /*a function to classify an item as "active":*/
-    if (!x) return false;
-    /*start by removing the "active" class on all items:*/
-    removeActive(x);
-    if (currentFocus >= x.length) currentFocus = 0;
-    if (currentFocus < 0) currentFocus = (x.length - 1);
-    /*add class "autocomplete-active":*/
-    x[currentFocus].classList.add("autocomplete-active");
-  }
-  function removeActive(x) {
-    /*a function to remove the "active" class from all autocomplete items:*/
-    for (var i = 0; i < x.length; i++) {
-      x[i].classList.remove("autocomplete-active");
-    }
-  }
-  function closeAllLists(elmnt) {
-    /*close all autocomplete lists in the document,
-    except the one passed as an argument:*/
-    var x = document.getElementsByClassName("autocomplete-items");
-    for (var i = 0; i < x.length; i++) {
-      if (elmnt != x[i] && elmnt != inp) {
-        x[i].parentNode.removeChild(x[i]);
-      }
-    }
-  }
-  /*execute a function when someone clicks in the document:*/
-  document.addEventListener("click", function (e) {
-      closeAllLists(e.target);
-  });
-}

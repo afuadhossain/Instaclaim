@@ -40,8 +40,8 @@
                         <!-- <form action="javascript:;" onsubmit="myFunction(this)">   -->
                         <!-- <form action="#" onsubmit="return validateFormOnSubmit(this);">     -->
                         <!-- <form action="#" onsubmit="return validateForm(this);" class="register-form" id="register-form"> -->
-                        <!-- <form action="#" onsubmit="return false;" class="register-form" id="register-form"> -->
-                        <form action="#" autocomplete="off" onsubmit="return false;" class="register-form" id="register-form">
+                        <form action="#" onsubmit="return false;" class="register-form" id="register-form">
+                        <!-- <form action="#" autocomplete="off" onsubmit="return false;" class="register-form" id="register-form"> -->
                             <div class="form-group">
                                 <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
                                 <input type="text" id="name" onKeyPress="newValueKeyPress(id)" onKeyUp="newValueKeyPress(id)" placeholder="Your Name"/>
@@ -75,7 +75,7 @@
                             <div class="form-group">
                                 <label for="flightDate"><i class="zmdi zmdi-calendar"></i></label>
                                 <div id="inline" data-date="01/05/2020">
-                                    <input type="text" id="flightDate" name="flightDate" placeholder="Flight Date">
+                                    <input type="text" id="flightDate" name="flightDate" placeholder="Flight Date" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -99,8 +99,8 @@
             </div>
         </section>
 
-        <section style="display:none" id="devPage" class="signup">
-            <!-- <section id="devPage" class="signup"> -->
+        <!-- <section style="display:none" id="devPage" class="signup"> -->
+            <section id="devPage" class="signup">
             <div class="container">
                 <div class="signup-content">
                     <div class="signup-form signup-form-dev">
@@ -171,7 +171,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://unpkg.com/fuse.js@2.5.0/src/fuse.min.js"></script>
-    <script src="https://screenfeedcontent.blob.core.windows.net/html/airports.js"></script>
 
     <!-- JS files for datepicker -->
     <!-- https://www.cssscript.com/vanilla-date-range-picker/ -->
@@ -183,6 +182,7 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/web3.min.js"></script>
     <script src="js/truffle-contract.js"></script>
+    <script src="data/airports.js"></script>
     <script src="data/airlines.js"></script>
     <script src="data/major-airlines.js"></script>
     <script src="js/clientAction.js"></script>

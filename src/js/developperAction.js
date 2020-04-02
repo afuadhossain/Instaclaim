@@ -22,7 +22,7 @@ function validateFlightTime(flightTime)
 
 function checkValidityFlightTime(id) {
     var element = document.getElementById(id);
-    var value = element.value;
+    var value = element.value.trim();
 
     if (value.length <= 0) {
         element.setCustomValidity('The entry is required');
