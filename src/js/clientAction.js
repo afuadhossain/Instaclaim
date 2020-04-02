@@ -129,11 +129,15 @@ function validateAirline(iata)
   return false;
 }
 
-function validateDate(date)
+function validateDate(flightDate)
 {
   var today = new Date();
-  log.console(today)
-  return false;
+  today.setHours(0,0,0,0); //Disregard the time in the date
+  var date = new Date(flightDate);
+  if (date >= today) 
+    return true;
+  else
+    return false;
 }
 
 function checkValidity(id){
@@ -224,7 +228,8 @@ function checkValidity(id){
             element.className = "input-form-invalid";
             return false
           } 
-          else return true;
+          else 
+            return true;
         }
         else {
           element.className = "input-form-invalid";
@@ -238,7 +243,8 @@ function checkValidity(id){
             element.className = "input-form-invalid";
             return false
           } 
-          else return true;
+          else 
+            return true;
         }
         else {
           element.className = "input-form-invalid";
@@ -566,9 +572,11 @@ function validateForm() {
   }
 
   document.getElementById("devPage").style.display = "block";
-  
 }
 
+$('#flightDate').on('changeDate', function(e) {
+  checkValidity('flightDate');
+});
 
 autocompleteAirport("departure", "left");
 autocompleteAirport("arrival", "right");
