@@ -1,6 +1,7 @@
-var flightInfo = { 
+var flightToDeploy = { 
 flightID : "",
-flightTimeDev : ""
+flightTimeDev : "",
+airlineType : ""
 };
 
 function validateFlightID(flightID) 
@@ -20,6 +21,15 @@ function validateFlightTime(flightTime)
       return false;
 }
 
+function validateAirlineType(type) 
+{
+  var validTypes = ["0", "1"];
+  if (validTypes.includes(type)) 
+    return true;
+  else
+    return false;
+}
+
 function checkValidityFlightTime(id) {
     var element = document.getElementById(id);
     var value = element.value.trim();
@@ -35,7 +45,7 @@ function checkValidityFlightTime(id) {
           if (validateFlightID(value)){
             element.setCustomValidity('');
             element.className = "input-form-valid";
-            flightInfo.flightID = value;
+            flightToDeploy.flightID = value;
             return true;
           } else {
             element.setCustomValidity('This FlightID does not exist');
@@ -46,10 +56,21 @@ function checkValidityFlightTime(id) {
           if (validateFlightTime(value)){
             element.setCustomValidity('');
             element.className = "input-form-valid";
-            flightInfo.flightTimeDev = value;
+            flightToDeploy.flightTimeDev = value;
             return true;
           } else {
             element.setCustomValidity('Format must be HH:MM');
+            element.className = "input-form-invalid";
+            return false;
+          }
+          case "airlineType":
+          if (validateAirlineType(value)){
+            element.setCustomValidity('');
+            element.className = "input-form-valid";
+            flightToDeploy.airlineType = value;
+            return true;
+          } else {
+            element.setCustomValidity('Must be either 0 or 1');
             element.className = "input-form-invalid";
             return false;
           }
@@ -66,7 +87,7 @@ function newValueKeyPressFlightTime(id) {
 }
 
 function setFlightTime() {
-    var list = ["setFlightID","flightTimeDev"];
+    var list = ["setFlightID","flightTimeDev","airlineType"];
     var isValid = true;
 
     list.forEach(function (id) {
@@ -112,6 +133,8 @@ function autocompleteFlightID(inp) {
       var nbElements = 0;
       /*for each item in the array...*/
       for (i = 0; i < arr.length; i++) {
+        if (flightList[arr[i]].length == 0)
+          continue
         /*check if the item starts with the same letters as the text field value:*/
         if (val == ""){
           nbElements += 1;
@@ -170,6 +193,8 @@ function autocompleteFlightID(inp) {
     var nbElements = 0;
     /*for each item in the array...*/
     for (i = 0; i < arr.length; i++) {
+      if (flightList[arr[i]].length == 0)
+          continue
       /*check if the item starts with the same letters as the text field value:*/
       if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
         nbElements += 1;

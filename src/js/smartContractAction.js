@@ -39,8 +39,26 @@ App = {
       // Connect provider to interact with contract
       App.contracts.FlightCompensation.setProvider(App.web3Provider);
         
-      // App.callFunctionsTest();
-
+      web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+          console.log(error);
+        }
+        //Account launching the contract
+        var account = accounts[0]; 
+        var contractAddress = App.contracts.FlightCompensation.deployed().address;
+        
+        App.contracts.FlightCompensation.deployed().then(function(compensationInstance) {
+          // Send money to deposit function
+          compensationInstance.deposit.sendTransaction({
+            from: account, 
+            value : web3.toWei("5", "ether")
+          });
+        }).then(function(result) {
+          console.log(result)
+        }).catch(function(err) {   
+          console.log(err.message);
+        });
+      });
     });
   },
 
@@ -61,46 +79,42 @@ App = {
       if (error) {
         console.log(error);
       }
-
-      var account = accounts[0];
-      var contractAddress = App.contracts.FlightCompensation.deployed().address;
-
-      //Send money to fallback function
-    //   web3.eth.sendTransaction({
-    //     to: contractAddress, 
-    //     from: account, 
-    //     value:web3.toWei("0.005", "ether")
-    //   },function(error, result){
-    //     if(error)
-    //         console.error(error);
-    //  })
+      var account = accounts[0]; 
 
       App.contracts.FlightCompensation.deployed().then(function(compensationInstance) {
-        // Send money to deposit function
-        compensationInstance.deposit.sendTransaction({
-          from: account, 
-          value : web3.toWei("5", "ether")
-        });
 
-        var flightID = flightInfo.flightID;
-        var flightIDencoded = web3.fromAscii(flightID);
-        // web3.toAscii(val)
+        var flightID = flightToDeploy.flightID;
+        var flightIDencoded = web3.fromAscii(flightID); // web3.toAscii(val) to inverse it
+        var hour = flightToDeploy.flightTimeDev.split(':')[0];
+        var minute = flightToDeploy.flightTimeDev.split(':')[1];
+        var travelers = flightList[flightID];
+        var time = new Date(travelers[Object.keys(travelers)[0]].flightDate);
+        time.setHours(hour);
+        time.setMinutes(minute);
 
-        dummyAddress = "0x0E667EAD48249e38B71c0d7Cc65bFBA3e724bEC4" //Will have to change that
-        // Execute adopt as a transaction by sending account
+        var hourInMilliSeconds = 10800000;
+        var resultList = []
+        for (var i = 0; i < travelers.length; i++){
 
-        return compensationInstance.addNewClaim(
-          123,
-          flightIDencoded,
-          1,
-          301,
-          601,
-          901,
-          dummyAddress,
-          {from: account});
+          resultList.push(compensationInstance.addNewClaim(
+            travelers[i].ID,
+            flightIDencoded,
+            flightToDeploy.airlineType,
+            time.getTime() + hourInMilliSeconds,
+            time.getTime() + 2*hourInMilliSeconds,
+            time.getTime() + 3*hourInMilliSeconds,
+            travelers[i].ETHaddress,
+            {from: account}).then(function(value, index) {
+              flightList[flightID].splice(index, 1);
+            }.bind(null, i)
+            ).catch(function(err) {   
+              console.log(err.message);
+            })
+          );
+        }
+        return resultList;
       }).then(function(result) {
         console.log(result)
-        // Delete flightID in flightList here
       }).catch(function(err) {   
         console.log(err.message);
       });

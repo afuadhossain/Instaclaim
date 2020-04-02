@@ -35,13 +35,13 @@
             <div class="container">
                 <div class="signup-content">
                     <div class="signup-form">
-                        <h2 class="form-title">InstaClaim</h2>
+                        <h2 class="form-title">InstaClaim (change with logo)</h2>
                         <!-- <form action="javascript:alert('Hello there, I am being submitted');"></form> -->
                         <!-- <form action="javascript:;" onsubmit="myFunction(this)">   -->
                         <!-- <form action="#" onsubmit="return validateFormOnSubmit(this);">     -->
                         <!-- <form action="#" onsubmit="return validateForm(this);" class="register-form" id="register-form"> -->
-                        <form action="#" onsubmit="return false;" class="register-form" id="register-form">
-                        <!-- <form action="#" autocomplete="off" onsubmit="return false;" class="register-form" id="register-form"> -->
+                        <!-- <form action="#" onsubmit="return false;" class="register-form" id="register-form"> -->
+                        <form action="#" autocomplete="off" onsubmit="return false;" class="register-form" id="register-form">
                             <div class="form-group">
                                 <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
                                 <input type="text" id="name" onKeyPress="newValueKeyPress(id)" onKeyUp="newValueKeyPress(id)" placeholder="Your Name"/>
@@ -99,8 +99,8 @@
             </div>
         </section>
 
-        <!-- <section style="display:none" id="devPage" class="signup"> -->
-            <section id="devPage" class="signup">
+        <section style="display:none" id="devPage" class="signup">
+            <!-- <section id="devPage" class="signup"> -->
             <div class="container">
                 <div class="signup-content">
                     <div class="signup-form signup-form-dev">
@@ -116,6 +116,10 @@
                             <div class="form-group-dev">
                                 <label><i class="zmdi zmdi-time"></i></label>
                                 <input type="text" id="flightTimeDev" onKeyPress="newValueKeyPressFlightTime(id)" onKeyUp="newValueKeyPressFlightTime(id)" placeholder="Flight Time (HH:MM)"/>
+                            </div>
+                            <div class="form-group-dev">
+                                <label><i class="zmdi zmdi-n-1-square"></i></label>
+                                <input type="text" id="airlineType" onKeyPress="newValueKeyPressFlightTime(id)" onKeyUp="newValueKeyPressFlightTime(id)" placeholder="Airline Type"/>
                             </div>
                             <div class="form-group-dev form-button">
                                 <input type="submit" onclick="setFlightTime()" class="form-submit-dev" value="Send"/>
