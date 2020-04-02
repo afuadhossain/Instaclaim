@@ -195,7 +195,7 @@ function autocompleteFlightID(inp) {
     }
   });
   /*execute a function presses a key on the keyboard:*/
-  inp.addEventListener("keydown", function(e) {
+  inp.addEventListener("keydown", function(e) { 
       var x = document.getElementById(this.id + "autocomplete-list");
       if (x) x = x.getElementsByTagName("div");
       if (e.keyCode == 40) {
@@ -217,6 +217,9 @@ function autocompleteFlightID(inp) {
           /*and simulate a click on the "active" item:*/
           if (x) x[currentFocus].click();
         }
+      } else if (e.keyCode == 9) {
+        var x = document.getElementById(this.id + "autocomplete-list");
+        x.parentNode.removeChild(x);
       }
   });
   function addActive(x) {

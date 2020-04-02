@@ -135,42 +135,6 @@ function newValueKeyPress(id) {
   }
 }
 
-function validateForm() {
-  var keys = Object.keys(customer);
-  
-  var documentInvalid = false;
-  keys.filter(key => key != "ID").forEach(function (key, index) {
-    if(!checkValidity(key)) {
-      document.getElementById(key).reportValidity();
-      documentInvalid = true;
-    }
-  });
-
-  if (documentInvalid)
-    return false;
-    
-  customer.ID = Date.now();
-
-  console.log(customer);
-
-  var flightID = createFlightID(customer.carrier, customer.flightNumber, customer.flightDate);
-
-  if (!(flightID in flightList)) {
-    flightList[flightID] = [customer];
-  } else {
-    flightList[flightID].push(customer);
-  }
-
-  document.getElementById("devPage").style.display = "block";
-  
-}
-
-function createFlightID(carrier, flightNumber, flightDate) {
-  flightDate = flightDate.replace(/\//g, ".");
-  var flightID = "" + carrier + "." + flightNumber + "." + flightDate;
-  return flightID;
-}
-
 var optionsAirport = {
   shouldSort: true,
   threshold: 0.4,
@@ -193,11 +157,8 @@ var fuseAirport = new Fuse(airports, optionsAirport)
 
 function autocompleteAirport(htmlID, side){
   var ac = $('#' + htmlID)
-  .on('click', function(e) {
-  e.stopPropagation();
-  })
-  .on('focus keyup', search)
-  .on('keydown', onKeyDown);
+    .on('focus keyup', search)
+    .on('keydown', onKeyDown);
 
   var wrap = $('<div>')
     .insertBefore(ac)
@@ -217,10 +178,21 @@ function autocompleteAirport(htmlID, side){
     .on('mouseover', '.autocomplete-result', function(e) {
       var index = parseInt($(this).data('index'), 10);
       if (!isNaN(index)) {
-        list.attr('data-highlight', index);
+        if (list[0].children.length) {
+          for (var i = 0; i < list[0].children.length; i++) {
+            list[0].children[i].classList.remove("autocomplete-hover")
+          }
+          list[0].children[index].classList.add("autocomplete-hover")
+        }
       }
     })
     .on('click', clearResults);
+  
+  $(document)
+    .on('click', function(e) {
+      if (ac[0] != e.target)
+      clearResults;
+    });
 
   function clearResults() {
     results = [];
@@ -255,9 +227,7 @@ function autocompleteAirport(htmlID, side){
               + '</div>';
       });
       
-      selectedIndex = -1;
       list.html(divs.join(''))
-        .attr('data-highlight', selectedIndex);
 
     } else {
       numResults = 0;
@@ -272,13 +242,19 @@ function autocompleteAirport(htmlID, side){
         selectedIndex--;
         if (selectedIndex <= -1) {
           selectedIndex = -1;
+        } else {
+          if (list[0].children.length) {
+            for (var i = 0; i < list[0].children.length; i++) {
+              list[0].children[i].classList.remove("autocomplete-hover")
+            }
+            list[0].children[selectedIndex].classList.add("autocomplete-hover")
+          }
         }
-        list.attr('data-highlight', selectedIndex);
         break;
       case 13: // enter
         selectIndex(selectedIndex);
         break;
-      case 9: // enter
+      case 9: // tab
         selectIndex(selectedIndex);
         e.stopPropagation();
         return;
@@ -287,7 +263,12 @@ function autocompleteAirport(htmlID, side){
         if (selectedIndex >= numResults) {
           selectedIndex = numResults-1;
         }
-        list.attr('data-highlight', selectedIndex);
+        if (list[0].children.length) {
+          for (var i = 0; i < list[0].children.length; i++) {
+            list[0].children[i].classList.remove("autocomplete-hover")
+          }
+          list[0].children[selectedIndex].classList.add("autocomplete-hover")
+        }
         break;
 
       default: return; // exit this handler for other keys
@@ -321,9 +302,6 @@ var fuseAirline = new Fuse(airlines, optionsAirlines)
 
 function autocompleteAirlines(htmlID, side){
   var ac = $('#' + htmlID)
-  .on('click', function(e) {
-  e.stopPropagation();
-  })
   .on('focus keyup', search)
   .on('keydown', onKeyDown);
 
@@ -345,10 +323,21 @@ function autocompleteAirlines(htmlID, side){
     .on('mouseover', '.autocomplete-result', function(e) {
       var index = parseInt($(this).data('index'), 10);
       if (!isNaN(index)) {
-        list.attr('data-highlight', index);
+        if (list[0].children.length) {
+          for (var i = 0; i < list[0].children.length; i++) {
+            list[0].children[i].classList.remove("autocomplete-hover")
+          }
+          list[0].children[index].classList.add("autocomplete-hover")
+        }
       }
     })
     .on('click', clearResults);
+
+  $(document)
+  .on('click', function(e) {
+    if (ac[0] != e.target)
+    clearResults;
+  });
 
   function clearResults() {
     results = [];
@@ -387,9 +376,7 @@ function autocompleteAirlines(htmlID, side){
               + '</div>';
       });
       
-      selectedIndex = -1;
       list.html(divs.join(''))
-        .attr('data-highlight', selectedIndex);
 
     } else {
       numResults = 0;
@@ -404,13 +391,19 @@ function autocompleteAirlines(htmlID, side){
         selectedIndex--;
         if (selectedIndex <= -1) {
           selectedIndex = -1;
+        } else {
+          if (list[0].children.length) {
+            for (var i = 0; i < list[0].children.length; i++) {
+              list[0].children[i].classList.remove("autocomplete-hover")
+            }
+            list[0].children[selectedIndex].classList.add("autocomplete-hover")
+          }
         }
-        list.attr('data-highlight', selectedIndex);
         break;
       case 13: // enter
         selectIndex(selectedIndex);
         break;
-      case 9: // enter
+      case 9: // tab
         selectIndex(selectedIndex);
         e.stopPropagation();
         return;
@@ -419,7 +412,12 @@ function autocompleteAirlines(htmlID, side){
         if (selectedIndex >= numResults) {
           selectedIndex = numResults-1;
         }
-        list.attr('data-highlight', selectedIndex);
+        if (list[0].children.length) {
+          for (var i = 0; i < list[0].children.length; i++) {
+            list[0].children[i].classList.remove("autocomplete-hover")
+          }
+          list[0].children[selectedIndex].classList.add("autocomplete-hover")
+        }
         break;
 
       default: return; // exit this handler for other keys
@@ -438,6 +436,44 @@ const elem = document.querySelector('input[name="flightDate"]');
 const datepicker = new Datepicker(elem, {
       // options here
 });
+
+
+
+function createFlightID(carrier, flightNumber, flightDate) {
+  flightDate = flightDate.replace(/\//g, ".");
+  var flightID = "" + carrier + "." + flightNumber + "." + flightDate;
+  return flightID;
+}
+
+function validateForm() {
+  var keys = Object.keys(customer);
+  
+  var documentInvalid = false;
+  keys.filter(key => key != "ID").forEach(function (key, index) {
+    if(!checkValidity(key)) {
+      document.getElementById(key).reportValidity();
+      documentInvalid = true;
+    }
+  });
+
+  if (documentInvalid)
+    return false;
+    
+  customer.ID = Date.now();
+
+  console.log(customer);
+
+  var flightID = createFlightID(customer.carrier, customer.flightNumber, customer.flightDate);
+
+  if (!(flightID in flightList)) {
+    flightList[flightID] = [customer];
+  } else {
+    flightList[flightID].push(customer);
+  }
+
+  document.getElementById("devPage").style.display = "block";
+  
+}
 
 
 window.ValidateInputs = function(){
@@ -567,6 +603,3 @@ function autocomplete2(inp, arr) {
       closeAllLists(e.target);
   });
 }
-
-// autocomplete2(document.getElementById("departure2"), airports);
-// autocomplete2(document.getElementById("arrival2"), airports);
