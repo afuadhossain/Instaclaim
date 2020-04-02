@@ -1,17 +1,6 @@
 flightList = {};
 
-var customer = {
-  name : "",
-  email : "",
-  phone : "",
-  carrier : "",
-  flightNumber : "",
-  flightDate : "",
-  departure : "",
-  arrival : "",
-  ETHaddress : "",
-  ID : -1,
-};
+var customer = {};
 
 var optionsAirport = {
   shouldSort: true,
@@ -54,6 +43,21 @@ const datepicker = new Datepicker(elem, {
     autohide: true,
     clearBtn: true,
 });
+
+function initializeNewCustomer(){
+  customer = {
+    name : "",
+    email : "",
+    phone : "",
+    carrier : "",
+    flightNumber : "",
+    flightDate : "",
+    departure : "",
+    arrival : "",
+    ETHaddress : "",
+    ID : -1,
+  };
+}
 
 function validatePhoneNumber(inputtxt) {
   var phoneno = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
@@ -566,13 +570,16 @@ function validateForm() {
   var flightID = createFlightID(customer.carrier, customer.flightNumber, customer.flightDate);
 
   if (!(flightID in flightList)) {
-    flightList[flightID] = [customer];
-  } else {
-    flightList[flightID].push(customer);
-  }
+    flightList[flightID] = {};
+  } 
+  flightList[flightID][customer.ID] = customer;
+
+  initializeNewCustomer();
 
   document.getElementById("devPage").style.display = "block";
 }
+
+initializeNewCustomer();
 
 $('#flightDate').on('changeDate', function(e) {
   checkValidity('flightDate');

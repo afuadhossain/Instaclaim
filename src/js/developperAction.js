@@ -133,8 +133,9 @@ function autocompleteFlightID(inp) {
       var nbElements = 0;
       /*for each item in the array...*/
       for (i = 0; i < arr.length; i++) {
-        if (flightList[arr[i]].length == 0)
-          continue
+        //If the dict is empty, skip
+        if (Object.keys(flightList[arr[i]]).length == 0)
+            continue
         /*check if the item starts with the same letters as the text field value:*/
         if (val == ""){
           nbElements += 1;
@@ -193,7 +194,8 @@ function autocompleteFlightID(inp) {
     var nbElements = 0;
     /*for each item in the array...*/
     for (i = 0; i < arr.length; i++) {
-      if (flightList[arr[i]].length == 0)
+      //If the dict is empty, skip
+      if (Object.keys(flightList[arr[i]]).length == 0)
           continue
       /*check if the item starts with the same letters as the text field value:*/
       if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {

@@ -49,7 +49,7 @@ App = {
         
         App.contracts.FlightCompensation.deployed().then(function(compensationInstance) {
           // Send money to deposit function
-          compensationInstance.deposit.sendTransaction({
+          return compensationInstance.deposit.sendTransaction({
             from: account, 
             value : web3.toWei("5", "ether")
           });
@@ -91,22 +91,22 @@ App = {
         var time = new Date(travelers[Object.keys(travelers)[0]].flightDate);
         time.setHours(hour);
         time.setMinutes(minute);
-
         var hourInMilliSeconds = 10800000;
         var resultList = []
-        for (var i = 0; i < travelers.length; i++){
-
+        
+        for (key in travelers){
           resultList.push(compensationInstance.addNewClaim(
-            travelers[i].ID,
+            travelers[key].ID,
             flightIDencoded,
             flightToDeploy.airlineType,
             time.getTime() + hourInMilliSeconds,
             time.getTime() + 2*hourInMilliSeconds,
             time.getTime() + 3*hourInMilliSeconds,
-            travelers[i].ETHaddress,
-            {from: account}).then(function(value, index) {
-              flightList[flightID].splice(index, 1);
-            }.bind(null, i)
+            travelers[key].ETHaddress,
+            {from: account}).then(function(key, response) {
+              console.log(response)
+              delete flightList[flightID][key];
+            }.bind(null, key)
             ).catch(function(err) {   
               console.log(err.message);
             })
