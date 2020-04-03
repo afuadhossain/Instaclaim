@@ -327,7 +327,7 @@ figure {
   -o-border-radius: 5px;
   -ms-border-radius: 5px;
   cursor: pointer; }
-  .form-submit:hover {
+  .form-submit-dev:hover {
     background: #4292dc; }
 
 #signin {
