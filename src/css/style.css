@@ -393,8 +393,10 @@ input {
   border: none;
   border-bottom: 1px solid #999;
   padding: 6px 30px;
+  padding-right: 10px;
   font-family: Poppins;
-  box-sizing: border-box; }
+  box-sizing: border-box; 
+  font-size: 14px; }
   input::-webkit-input-placeholder {
     color: #999; }
   input::-moz-placeholder {
