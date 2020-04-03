@@ -103,14 +103,22 @@
             <div class="container">
                 <div class="signup-content">
                     <div class="signup-form signup-form-dev">
-                        <h2 class="form-title">Developper Console (Oracle)</h2>
+                        <h2 class="form-title">Developper Console and Oracle</h2>
                         <!-- <form action="javascript:alert('Hello there, I am being submitted');"></form> -->
                         <!-- <form action="javascript:;" onsubmit="myFunction(this)">   -->
                         <form autocomplete="off" action="#" onsubmit="return false;" class="register-form" id="register-form">
+                            <h3 class="form-title form-title-dev">Fund Contract</h3>
+                            <div class="form-group-dev">
+                                <label><i class="zmdi zmdi-n-1-square"></i></label>
+                                <input type="text" id="sendAmount" onKeyPress="newValueKeyPressDev(id)" onKeyUp="newValueKeyPressDev(id)" placeholder="Amount (Ether)"/>
+                            </div>
+                            <div class="form-group-dev form-button">
+                                <input type="submit" onclick="fundContract()" class="form-submit-dev" value="Send"/>
+                            </div>
                             <h3 class="form-title form-title-dev">Set Flight Time</h3>
                             <div class="form-group-dev-icon autocomplete">
                                 <label><i class="zmdi zmdi-account-box"></i></label>
-                                <input type="text" id="setFlightID" onKeyPress="newValueKeyPressFlightTime(id)" onKeyUp="newValueKeyPressFlightTime(id)" placeholder="FlightID"/>
+                                <input type="text" id="setFlightID" onKeyPress="newValueKeyPressDev(id)" onKeyUp="newValueKeyPressDev(id)" placeholder="FlightID"/>
                             </div>
                             <div class="form-group-dev">
                                 <label><i class="zmdi zmdi-calendar"></i></label>
@@ -120,11 +128,11 @@
                             </div>
                             <div class="form-group-dev">
                                 <label><i class="zmdi zmdi-time"></i></label>
-                                <input type="text" id="flightArrivalTime" onKeyPress="newValueKeyPressFlightTime(id)" onKeyUp="newValueKeyPressFlightTime(id)" placeholder="Flight Arrival Time (HH:MM)"/>
+                                <input type="text" id="flightArrivalTime" onKeyPress="newValueKeyPressDev(id)" onKeyUp="newValueKeyPressDev(id)" placeholder="Flight Arrival Time (HH:MM)"/>
                             </div>
                             <div class="form-group-dev">
                                 <label><i class="zmdi zmdi-n-1-square"></i></label>
-                                <input type="text" id="airlineType" onKeyPress="newValueKeyPressFlightTime(id)" onKeyUp="newValueKeyPressFlightTime(id)" placeholder="Airline Type (0 or 1)"/>
+                                <input type="text" id="airlineType" onKeyPress="newValueKeyPressDev(id)" onKeyUp="newValueKeyPressDev(id)" placeholder="Airline Type (0 or 1)"/>
                             </div>
                             <div class="form-group-dev form-button">
                                 <input type="submit" onclick="setFlightTime()" class="form-submit-dev" value="Send"/>
@@ -132,7 +140,7 @@
                             <h3 class="form-title form-title-dev">Update Flight Status</h3>
                             <div class="form-group-dev-icon autocomplete">
                                 <label><i class="zmdi zmdi-account-box"></i></label>
-                                <input type="text" id="updateFlightID" onKeyPress="newValueKeyPressFlightTime(id)" onKeyUp="newValueKeyPressFlightTime(id)" placeholder="FlightID"/>
+                                <input type="text" id="updateFlightID" onKeyPress="newValueKeyPressDev(id)" onKeyUp="newValueKeyPressDev(id)" placeholder="FlightID"/>
                             </div>
                             <div class="form-group-dev">
                                 <label><i class="zmdi zmdi-calendar"></i></label>
@@ -142,7 +150,7 @@
                             </div>
                             <div class="form-group-dev">
                                 <label><i class="zmdi zmdi-time"></i></label>
-                                <input type="text" id="flightActualArrivalTime" onKeyPress="newValueKeyPressFlightTime(id)" onKeyUp="newValueKeyPressFlightTime(id)" placeholder="Flight Actual Arrival Time (HH:MM)"/>
+                                <input type="text" id="flightActualArrivalTime" onKeyPress="newValueKeyPressDev(id)" onKeyUp="newValueKeyPressDev(id)" placeholder="Flight Actual Arrival Time (HH:MM)"/>
                             </div>
                             <div class="form-group-dev form-button">
                                 <input type="submit" onclick="updateFlightStatus()" class="form-submit-dev" value="Send"/>

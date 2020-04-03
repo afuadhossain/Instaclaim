@@ -12,6 +12,7 @@ var flightToUpdate = {
 };
 
 var displayErrorMessage = false;
+var sendAmountEther = 0;
 
 // Create datepicker elements
 const flightArrivalDateElem = document.querySelector('input[id="flightArrivalDate"]');
@@ -20,7 +21,7 @@ const datepickerArrivalDate = new Datepicker(flightArrivalDateElem, {
     clearBtn: true,
 });
 $('#flightArrivalDate').on('changeDate', function(e) {
-  checkValidityFlightTime('flightArrivalDate');
+  checkValidityDev('flightArrivalDate');
   document.getElementById('flightArrivalTime').focus();
 });
 
@@ -62,7 +63,18 @@ function validateAirlineType(type)
     return false;
 }
 
-function checkValidityFlightTime(id) {
+function validateAmount(amount) 
+{
+  var amountRegex = /^(([0-9]+)|(([0-9]+)\.([0-9]+)))$/; //Numerical values including dec
+  if (amount.match(amountRegex)) {
+    if (parseFloat(amount) > 0){
+      return true;
+    }
+  }
+  return false;
+}
+
+function checkValidityDev(id) {
     var element = document.getElementById(id);
     var value = element.value.trim();
 
@@ -73,6 +85,17 @@ function checkValidityFlightTime(id) {
     }
 
     switch(id){
+        case "sendAmount":
+          if (validateAmount(value)){
+            element.setCustomValidity('');
+            element.className = "input-form-valid";
+            sendAmountEther = value;
+            return true;
+          } else {
+            element.setCustomValidity('Enter a valid amount');
+            element.className = "input-form-invalid";
+            return false;
+          }
         case "setFlightID":
           if (validateFlightID(value)){
             element.setCustomValidity('');
@@ -146,7 +169,7 @@ function checkValidityFlightTime(id) {
       }
 }
 
-function newValueKeyPressFlightTime(id) {
+function newValueKeyPressDev(id) {
     //Skip validation to avoid overriding current displayed error
     if (displayErrorMessage){
       displayErrorMessage = false;
@@ -154,9 +177,8 @@ function newValueKeyPressFlightTime(id) {
     }
 
     var element = document.getElementById(id);
-
     if (!element.reportValidity()) {
-        checkValidityFlightTime(id);
+        checkValidityDev(id);
     }
 }
 
@@ -330,12 +352,26 @@ function autocompleteFlightID(inp) {
   });
 }
 
+
+function fundContract(){
+  if(!checkValidityDev("sendAmount")) {
+    $("#sendAmount").val('');
+    return;  
+  } 
+  else {
+    $("#sendAmount").val('');
+    console.log('send ether',sendAmountEther);
+    App.transferFunds(sendAmountEther);
+  }
+}
+
+
 function setFlightTime() {
   var list = ["setFlightID","flightArrivalDate","flightArrivalTime","airlineType"];
   var isValid = true;
 
   list.forEach(function (id) {
-      if(!checkValidityFlightTime(id)) {
+      if(!checkValidityDev(id)) {
           isValid = false;
           $("#"+id).val('');
       }
@@ -385,12 +421,13 @@ function setFlightTime() {
   App.createClaim(flightToDeploy.flightID, flightArrivalDateTime, flightToDeploy.airlineType);
 }
 
+
 function updateFlightStatus() {
   var list = ["updateFlightID","flightActualArrivalDate", "flightActualArrivalTime"];
   var isValid = true;
 
   list.forEach(function (id) {
-      if(!checkValidityFlightTime(id)) {
+      if(!checkValidityDev(id)) {
           isValid = false;
           $("#"+id).val('');
       }

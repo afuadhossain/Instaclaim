@@ -40,25 +40,24 @@ App = {
       App.contracts.FlightCompensation.setProvider(App.web3Provider);
 
       App.contracts.FlightCompensation.deployed().then(function(instance){
-        App.transferFunds();
+        // App.transferFunds();
       });
     });
   },
 
-  transferFunds: function() {
+  transferFunds: function(amountEther) {
     web3.eth.getAccounts(function(error, accounts) {
       if (error) {
         console.log(error);
       }
       //Account launching the contract
       var account = accounts[0]; 
-      var contractAddress = App.contracts.FlightCompensation.deployed().address;
       
       App.contracts.FlightCompensation.deployed().then(function(compensationInstance) {
         // Send money to deposit function
         return compensationInstance.deposit.sendTransaction({
           from: account, 
-          value : web3.toWei("5", "ether")
+          value : web3.toWei(amountEther, "ether")
         });
       }).then(function(result) {
         console.log(result)
@@ -142,28 +141,7 @@ App = {
         console.log(err.message);
       });
     });
-  },
-
-  bindEvents: function() {
-    $(document).on('click', '.btn-adopt', App.handleAdopt);
-  },
-
-  markAdopted: function(adopters, account) {
-    /*
-     * Replace me...
-     */
-  },
-
-  handleAdopt: function(event) {
-    event.preventDefault();
-
-    var petId = parseInt($(event.target).data('id'));
-
-    /*
-     * Replace me...
-     */
   }
-
 };
 
 $(function() {

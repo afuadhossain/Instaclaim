@@ -1,5 +1,4 @@
-flightList = {};
-
+var flightList = {};
 var customer = {};
 
 var optionsAirport = {
