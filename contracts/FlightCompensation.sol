@@ -4,12 +4,12 @@ contract FlightCompensation{
     /*
     * Compensation amounts
     */
-    uint16 small3 = 125;
-    uint16 small6 = 250;
-    uint16 small9 = 500;
-    uint16 large3 = 400;
-    uint16 large6 = 700;
-    uint16 large9 = 1000;
+    uint256 small3 = 125;
+    uint256 small6 = 250;
+    uint256 small9 = 500;
+    uint256 large3 = 400;
+    uint256 large6 = 700;
+    uint256 large9 = 1000;
     uint256 private availableFunds; //variable storing the contract funds
 
     /*
@@ -29,7 +29,7 @@ contract FlightCompensation{
         uint256 maxArrivalTime1;   //Original Arrival time + 6 hours
         uint256 maxArrivalTime2;   //Original Arrival time + 9 hours
         uint8 status;           //status of the flight
-        uint16 compensation;    //amount owed to the passenger: $0-$1000
+        uint256 compensation;    //amount owed to the passenger: $0-$1000
         address payable compensationAddress;    //address to which we will send the compensation
     }
 
@@ -43,7 +43,7 @@ contract FlightCompensation{
         uint256 ID,        //ID identifying the claim/passenger
         bytes32 flightID,   // <carrier_code><flight_number>.<timestamp_in_sec_of_departure_date>
         uint8 status,           //status of the flight
-        uint16 compensation    //amount owed to the passenger: $0-$1000
+        uint256 compensation    //amount owed to the passenger: $0-$1000
     );
 
     event CompensationPaid(     //event sent when the claim's determined compensation has been payed to passenger
@@ -54,7 +54,7 @@ contract FlightCompensation{
 
     event CompensationError(    //event sent when there is an error in sending the compensation to the passenger
         uint256 ID,             //ID identifying the claim/passenger
-        uint16 compensation,    //confirmed amount sent to the passenger's account in WEI
+        uint256 compensation,    //confirmed amount sent to the passenger's account in WEI
         address recipient,      //passenger's address
         bytes32 errorMessage    //error message
     );
@@ -73,7 +73,7 @@ contract FlightCompensation{
         if (msg.sender == creator) _;
     }
 
-    modifier enoughFunds(uint16 compensation) {
+    modifier enoughFunds(uint256 compensation) {
         require(availableFunds >= compensation/150, "Not enough funds in contract to pay compensation");
         _;
     }
@@ -174,7 +174,7 @@ contract FlightCompensation{
     }
 
     function getClaim(bytes32 flightID, uint i) public view onlyIfCreator returns (
-                        uint256, uint8, uint256, uint256, uint256, uint8, uint16, address payable) {
+                        uint256, uint8, uint256, uint256, uint256, uint8, uint256, address payable) {
         Claim memory claim = claimList[flightID][i];
         return (claim.ID, claim.airlineType, claim.maxArrivalTime0, claim.maxArrivalTime1,
                     claim.maxArrivalTime2, claim.status, claim.compensation, claim.compensationAddress);
@@ -184,6 +184,10 @@ contract FlightCompensation{
     //https://solidity.readthedocs.io/en/v0.5.3/contracts.html#fallback-function
     function() external payable {
         availableFunds = availableFunds + msg.value;
+    }
+
+    function USDtoWei(uint256 amount) internal returns (uint256) {
+        return (amount*1000000000000000000)/150;
     }
 
     //Deposits made with deposit() go to this function
@@ -196,11 +200,11 @@ contract FlightCompensation{
     }
     function compensate(
         uint256 ID,
-        uint16 compensation,
+        uint256 compensation,
         address payable recipient
     )
     internal enoughFunds(compensation){
-        uint256 WEIcompensation = (compensation*1000000000000000000)/150;
+        uint256 WEIcompensation = USDtoWei(compensation);
         //if(recipient.send(compensation)) {
             recipient.transfer(WEIcompensation);
             emit CompensationPaid(ID, WEIcompensation, recipient);
