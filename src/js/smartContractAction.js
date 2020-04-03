@@ -38,26 +38,32 @@ App = {
       App.contracts.FlightCompensation = TruffleContract(data);
       // Connect provider to interact with contract
       App.contracts.FlightCompensation.setProvider(App.web3Provider);
-        
-      web3.eth.getAccounts(function(error, accounts) {
-        if (error) {
-          console.log(error);
-        }
-        //Account launching the contract
-        var account = accounts[0]; 
-        var contractAddress = App.contracts.FlightCompensation.deployed().address;
-        
-        App.contracts.FlightCompensation.deployed().then(function(compensationInstance) {
-          // Send money to deposit function
-          return compensationInstance.deposit.sendTransaction({
-            from: account, 
-            value : web3.toWei("5", "ether")
-          });
-        }).then(function(result) {
-          console.log(result)
-        }).catch(function(err) {   
-          console.log(err.message);
+
+      App.contracts.FlightCompensation.deployed().then(function(instance){
+        // App.transferFunds();
+      });
+    });
+  },
+
+  transferFunds: function() {
+    web3.eth.getAccounts(function(error, accounts) {
+      if (error) {
+        console.log(error);
+      }
+      //Account launching the contract
+      var account = accounts[0]; 
+      var contractAddress = App.contracts.FlightCompensation.deployed().address;
+      
+      App.contracts.FlightCompensation.deployed().then(function(compensationInstance) {
+        // Send money to deposit function
+        return compensationInstance.deposit.sendTransaction({
+          from: account, 
+          value : web3.toWei("5", "ether")
         });
+      }).then(function(result) {
+        console.log(result)
+      }).catch(function(err) {   
+        console.log(err.message);
       });
     });
   },
@@ -73,7 +79,7 @@ App = {
   },
 
   // Listen for events emitted from the contract
-  createClaim: function() {
+  createClaim: function(flightID, flightArrivalDateTime, airlineType) {
 
     web3.eth.getAccounts(function(error, accounts) {
       if (error) {
@@ -83,25 +89,19 @@ App = {
 
       App.contracts.FlightCompensation.deployed().then(function(compensationInstance) {
 
-        var flightID = flightToDeploy.flightID;
-        var flightIDencoded = web3.fromAscii(flightID); // web3.toAscii(val) to inverse it
-        var hour = flightToDeploy.flightTimeDev.split(':')[0];
-        var minute = flightToDeploy.flightTimeDev.split(':')[1];
+        var flightIDencoded = web3.fromAscii(flightID); // web3.toAscii(val) to convert back
+        const hourInMilliSeconds = 10800000;
         var travelers = flightList[flightID];
-        var time = new Date(travelers[Object.keys(travelers)[0]].flightDate);
-        time.setHours(hour);
-        time.setMinutes(minute);
-        var hourInMilliSeconds = 10800000;
         var resultList = []
-        
+
         for (key in travelers){
           resultList.push(compensationInstance.addNewClaim(
             travelers[key].ID,
             flightIDencoded,
-            flightToDeploy.airlineType,
-            time.getTime() + hourInMilliSeconds,
-            time.getTime() + 2*hourInMilliSeconds,
-            time.getTime() + 3*hourInMilliSeconds,
+            airlineType,
+            flightArrivalDateTime.getTime() + hourInMilliSeconds,
+            flightArrivalDateTime.getTime() + 2*hourInMilliSeconds,
+            flightArrivalDateTime.getTime() + 3*hourInMilliSeconds,
             travelers[key].ETHaddress,
             {from: account}).then(function(key, response) {
               console.log(response)
@@ -121,17 +121,16 @@ App = {
     });
   },
 
-  updateFlight: function() {
+  updateFlight: function(flightID, flightActualArrivalTime) {
 
     web3.eth.getAccounts(function(error, accounts) {
       if (error) {
         console.log(error);
       }
-
       var account = accounts[0];
 
       App.contracts.FlightCompensation.deployed().then(function(compensationInstance) {
-      return compensationInstance.updateFlightStatus("0x7465737400000000000000000000000000000000000000000000000000000000",650, {from: account});
+      return compensationInstance.updateFlightStatus(flightID,650, {from: account});
       }).then(function(result) {
         console.log(result)
       }).catch(function(err) {   

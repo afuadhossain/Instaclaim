@@ -44,6 +44,11 @@ const datepicker = new Datepicker(elem, {
     clearBtn: true,
 });
 
+$('#flightDate').on('changeDate', function(e) {
+  checkValidity('flightDate');
+  document.getElementById('ETHaddress').focus();
+});
+
 function initializeNewCustomer(){
   customer = {
     name : "",
@@ -580,10 +585,6 @@ function validateForm() {
 }
 
 initializeNewCustomer();
-
-$('#flightDate').on('changeDate', function(e) {
-  checkValidity('flightDate');
-});
 
 autocompleteAirport("departure", "left");
 autocompleteAirport("arrival", "right");

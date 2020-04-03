@@ -1,8 +1,28 @@
 var flightToDeploy = { 
-flightID : "",
-flightTimeDev : "",
-airlineType : ""
+  flightID : "",
+  flightArrivalDate : "",
+  flightArrivalTime : "",
+  airlineType : ""
 };
+
+var flightToUpdate = {
+  flightID : "",
+  flightActualArrivalTime : ""
+};
+
+var displayErrorMessage = false;
+
+// Create datepicker element
+const flightArrivalDateElem = document.querySelector('input[id="flightArrivalDate"]');
+const datepickerArrivalDate = new Datepicker(flightArrivalDateElem, {
+    autohide: true,
+    clearBtn: true,
+});
+
+$('#flightArrivalDate').on('changeDate', function(e) {
+  checkValidityFlightTime('flightArrivalDate');
+  document.getElementById('flightArrivalTime').focus();
+});
 
 function validateFlightID(flightID) 
 {
@@ -14,11 +34,14 @@ function validateFlightID(flightID)
 
 function validateFlightTime(flightTime) 
 {
-    var timeRegex = /^[0-2]{0,1}[0-9]{1}:[0-5]{1}[0-9]{1}$/; //HH:MM format
-    if (flightTime.match(timeRegex)) 
+  var timeRegex = /^[0-2]{0,1}[0-9]{1}:[0-5]{1}[0-9]{1}$/; //HH:MM format
+  if (flightTime.match(timeRegex)) {
+    var hour = parseInt(flightTime.split(':')[0]);
+    if (hour < 24){
       return true;
-    else
-      return false;
+    }
+  }
+  return false;
 }
 
 function validateAirlineType(type) 
@@ -52,18 +75,27 @@ function checkValidityFlightTime(id) {
             element.className = "input-form-invalid";
             return false;
           }
-          case "flightTimeDev":
+        case "flightArrivalDate":
+          if (validateDate(value)){
+            element.className = "input-form-valid";
+            flightToDeploy.flightArrivalDate = value;
+            return true;
+          } else {
+            element.className = "input-form-invalid";
+            return false;
+          }
+        case "flightArrivalTime":
           if (validateFlightTime(value)){
             element.setCustomValidity('');
             element.className = "input-form-valid";
-            flightToDeploy.flightTimeDev = value;
+            flightToDeploy.flightArrivalTime = value;
             return true;
           } else {
             element.setCustomValidity('Format must be HH:MM');
             element.className = "input-form-invalid";
             return false;
           }
-          case "airlineType":
+        case "airlineType":
           if (validateAirlineType(value)){
             element.setCustomValidity('');
             element.className = "input-form-valid";
@@ -74,43 +106,45 @@ function checkValidityFlightTime(id) {
             element.className = "input-form-invalid";
             return false;
           }
+        case "updateFlightID":
+          if (validateFlightID(value)){
+            element.setCustomValidity('');
+            element.className = "input-form-valid";
+            flightToUpdate.flightID = value;
+            return true;
+          } else {
+            element.setCustomValidity('This FlightID does not exist');
+            element.className = "input-form-invalid";
+            return false;
+          }
+        case "flightActualArrivalTime":
+          if (validateFlightTime(value)){
+            element.setCustomValidity('');
+            element.className = "input-form-valid";
+            flightToUpdate.flightActualArrivalTime = value;
+            return true;
+          } else {
+            element.setCustomValidity('Format must be HH:MM');
+            element.className = "input-form-invalid";
+            return false;
+          }
         default: return false;
       }
 }
 
 function newValueKeyPressFlightTime(id) {
+    //Skip validation to avoid overriding current displayed error
+    if (displayErrorMessage){
+      displayErrorMessage = false;
+      return;
+    }
+
     var element = document.getElementById(id);
 
     if (!element.reportValidity()) {
         checkValidityFlightTime(id);
     }
 }
-
-function setFlightTime() {
-    var list = ["setFlightID","flightTimeDev","airlineType"];
-    var isValid = true;
-
-    list.forEach(function (id) {
-        if(!checkValidityFlightTime(id)) {
-            isValid = false;
-            $("#"+id).val('');
-        }
-    });
-    
-    if (isValid){
-        list.forEach(function (id) {
-              $("#"+id).val('');
-        });
-        createContract();
-    } 
-}
-
-function createContract(){
-  
-    App.createClaim();
-
-}
-
 
 function autocompleteFlightID(inp) {
   /*the autocomplete function takes two arguments,
@@ -134,8 +168,9 @@ function autocompleteFlightID(inp) {
       /*for each item in the array...*/
       for (i = 0; i < arr.length; i++) {
         //If the dict is empty, skip
-        if (Object.keys(flightList[arr[i]]).length == 0)
-            continue
+        var dictSize = Object.keys(flightList[arr[i]]).length;
+        if (dictSize == 0 && inp.id != "updateFlightID")
+            continue;
         /*check if the item starts with the same letters as the text field value:*/
         if (val == ""){
           nbElements += 1;
@@ -195,8 +230,9 @@ function autocompleteFlightID(inp) {
     /*for each item in the array...*/
     for (i = 0; i < arr.length; i++) {
       //If the dict is empty, skip
-      if (Object.keys(flightList[arr[i]]).length == 0)
-          continue
+      var dictSize = Object.keys(flightList[arr[i]]).length;
+      if (dictSize == 0 && inp.id != "updateFlightID")
+            continue;
       /*check if the item starts with the same letters as the text field value:*/
       if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
         nbElements += 1;
@@ -238,20 +274,21 @@ function autocompleteFlightID(inp) {
         /*and and make the current item more visible:*/
         addActive(x);
       } else if (e.keyCode == 13) {
-        /*If the ENTER key is pressed, prevent the form from being submitted,*/
-        e.preventDefault();
         if (currentFocus > -1) {
+          /*If the ENTER key is pressed, prevent the form from being submitted,*/
+          e.preventDefault();
           /*and simulate a click on the "active" item:*/
           if (x) x[currentFocus].click();
         }
       } else if (e.keyCode == 9) {
         var x = document.getElementById(this.id + "autocomplete-list");
-        x.parentNode.removeChild(x);
+        if (x) 
+          x.parentNode.removeChild(x);
       }
   });
   function addActive(x) {
     /*a function to classify an item as "active":*/
-    if (!x) return false;
+    if (!x || x.length == 0) return false;
     /*start by removing the "active" class on all items:*/
     removeActive(x);
     if (currentFocus >= x.length) currentFocus = 0;
@@ -268,11 +305,9 @@ function autocompleteFlightID(inp) {
   function closeAllLists(elmnt) {
     /*close all autocomplete lists in the document,
     except the one passed as an argument:*/
-    var x = document.getElementsByClassName("autocomplete-items");
-    for (var i = 0; i < x.length; i++) {
-      if (elmnt != x[i] && elmnt != inp) {
-        x[i].parentNode.removeChild(x[i]);
-      }
+    var x = document.getElementById(inp.id+"autocomplete-list")
+    if (x && elmnt != x && elmnt != inp) {
+      x.parentNode.removeChild(x);
     }
   }
   /*execute a function when someone clicks in the document:*/
@@ -281,4 +316,80 @@ function autocompleteFlightID(inp) {
   });
 }
 
+function setFlightTime() {
+  var list = ["setFlightID","flightArrivalDate","flightArrivalTime","airlineType"];
+  var isValid = true;
+
+  list.forEach(function (id) {
+      if(!checkValidityFlightTime(id)) {
+          isValid = false;
+          $("#"+id).val('');
+      }
+  });
+
+  if (!isValid){
+    return;
+  }
+
+  var selectedFlight = flightList[flightToDeploy.flightID];
+
+  //Make sure there is new passengers to update
+  if (Object.keys(selectedFlight).length == 0){
+    var idElement = document.getElementById("setFlightID");
+    idElement.value = "";
+    idElement.className = "input-form-invalid";
+    idElement.setCustomValidity('There is no new passenger to update');
+    displayErrorMessage = true;
+    return;
+  }
+
+  //Make sure arrival date is after flight date
+  var flightDate = new Date(selectedFlight[Object.keys(selectedFlight)[0]].flightDate);
+  var hour = flightToDeploy.flightArrivalTime.split(':')[0];
+  var minute = flightToDeploy.flightArrivalTime.split(':')[1];
+  var flightArrivalDateTime = new Date(flightToDeploy.flightArrivalDate);
+  flightArrivalDateTime.setHours(hour);
+  flightArrivalDateTime.setMinutes(minute);
+  
+  if (flightDate > flightArrivalDateTime){
+    var dateElement = document.getElementById("flightArrivalDate");
+    var timeElement = document.getElementById("flightArrivalTime");
+    dateElement.value = "";
+    timeElement.value = "";
+    dateElement.className = "input-form-invalid";
+    timeElement.className = "input-form-invalid";
+    timeElement.setCustomValidity('Arrival time must be after flight date');
+    displayErrorMessage = true;
+    return;
+  }
+
+  list.forEach(function (id) {
+        $("#"+id).val('');
+  });
+  
+  console.log(flightToDeploy.flightID, flightArrivalDateTime, flightToDeploy.airlineType);
+  App.createClaim(flightToDeploy.flightID, flightArrivalDateTime, flightToDeploy.airlineType);
+}
+
+function updateFlightStatus() {
+  var list = ["updateFlightID","flightActualArrivalTime"];
+  var isValid = true;
+
+  list.forEach(function (id) {
+      if(!checkValidityFlightTime(id)) {
+          isValid = false;
+          $("#"+id).val('');
+      }
+  });
+  
+  if (isValid){
+      list.forEach(function (id) {
+            $("#"+id).val('');
+      });
+
+      App.updateFlight(flightToUpdate.flightID, flightToUpdate.flightActualArrivalTime);
+  } 
+}
+
 autocompleteFlightID(document.getElementById("setFlightID"));
+autocompleteFlightID(document.getElementById("updateFlightID"));
