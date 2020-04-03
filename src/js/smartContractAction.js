@@ -40,7 +40,7 @@ App = {
       App.contracts.FlightCompensation.setProvider(App.web3Provider);
 
       App.contracts.FlightCompensation.deployed().then(function(instance){
-        // App.transferFunds();
+        App.transferFunds();
       });
     });
   },
@@ -104,9 +104,9 @@ App = {
             flightArrivalDateTime.getTime() + 3*hourInMilliSeconds,
             travelers[key].ETHaddress,
             {from: account}).then(function(key, response) {
-              console.log(response)
-              delete flightList[flightID][key];
-            }.bind(null, key)
+                console.log(response)
+                delete flightList[flightID][key];
+              }.bind(null, key)
             ).catch(function(err) {   
               console.log(err.message);
             })
@@ -121,7 +121,7 @@ App = {
     });
   },
 
-  updateFlight: function(flightID, flightActualArrivalTime) {
+  updateFlight: function(flightID, flightActualArrivalDateTime) {
 
     web3.eth.getAccounts(function(error, accounts) {
       if (error) {
@@ -130,13 +130,17 @@ App = {
       var account = accounts[0];
 
       App.contracts.FlightCompensation.deployed().then(function(compensationInstance) {
-      return compensationInstance.updateFlightStatus(flightID,650, {from: account});
+
+        var flightIDencoded = web3.fromAscii(flightID); // web3.toAscii(val) to convert back
+        return compensationInstance.updateFlightStatus(
+          flightIDencoded, 
+          flightActualArrivalDateTime.getTime(), 
+          {from: account});
       }).then(function(result) {
         console.log(result)
       }).catch(function(err) {   
         console.log(err.message);
       });
-
     });
   },
 

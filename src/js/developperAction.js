@@ -7,21 +7,30 @@ var flightToDeploy = {
 
 var flightToUpdate = {
   flightID : "",
+  flightActualArrivalDate : "",
   flightActualArrivalTime : ""
 };
 
 var displayErrorMessage = false;
 
-// Create datepicker element
+// Create datepicker elements
 const flightArrivalDateElem = document.querySelector('input[id="flightArrivalDate"]');
 const datepickerArrivalDate = new Datepicker(flightArrivalDateElem, {
     autohide: true,
     clearBtn: true,
 });
-
 $('#flightArrivalDate').on('changeDate', function(e) {
   checkValidityFlightTime('flightArrivalDate');
   document.getElementById('flightArrivalTime').focus();
+});
+
+const flightActualArrivalDateElem = document.querySelector('input[id="flightActualArrivalDate"]');
+const datepickerActualArrivalDate = new Datepicker(flightActualArrivalDateElem, {
+    autohide: true,
+    clearBtn: true,
+});
+$('#flightActualArrivalDate').on('changeDate', function(e) {
+  document.getElementById('flightActualArrivalTime').focus();
 });
 
 function validateFlightID(flightID) 
@@ -117,6 +126,11 @@ function checkValidityFlightTime(id) {
             element.className = "input-form-invalid";
             return false;
           }
+        case "flightActualArrivalDate":
+            //For now you can put it to any date
+            element.className = "input-form-valid";
+            flightToUpdate.flightActualArrivalDate = value;
+            return true;
         case "flightActualArrivalTime":
           if (validateFlightTime(value)){
             element.setCustomValidity('');
@@ -343,7 +357,6 @@ function setFlightTime() {
     return;
   }
 
-  //Make sure arrival date is after flight date
   var flightDate = new Date(selectedFlight[Object.keys(selectedFlight)[0]].flightDate);
   var hour = flightToDeploy.flightArrivalTime.split(':')[0];
   var minute = flightToDeploy.flightArrivalTime.split(':')[1];
@@ -351,6 +364,7 @@ function setFlightTime() {
   flightArrivalDateTime.setHours(hour);
   flightArrivalDateTime.setMinutes(minute);
   
+  //Make sure arrival date is after flight date
   if (flightDate > flightArrivalDateTime){
     var dateElement = document.getElementById("flightArrivalDate");
     var timeElement = document.getElementById("flightArrivalTime");
@@ -372,7 +386,7 @@ function setFlightTime() {
 }
 
 function updateFlightStatus() {
-  var list = ["updateFlightID","flightActualArrivalTime"];
+  var list = ["updateFlightID","flightActualArrivalDate", "flightActualArrivalTime"];
   var isValid = true;
 
   list.forEach(function (id) {
@@ -381,14 +395,23 @@ function updateFlightStatus() {
           $("#"+id).val('');
       }
   });
-  
-  if (isValid){
-      list.forEach(function (id) {
-            $("#"+id).val('');
-      });
 
-      App.updateFlight(flightToUpdate.flightID, flightToUpdate.flightActualArrivalTime);
-  } 
+  if (!isValid){
+    return;
+  }
+
+  var hour = flightToUpdate.flightActualArrivalTime.split(':')[0];
+  var minute = flightToUpdate.flightActualArrivalTime.split(':')[1];
+  var flightActualArrivalDateTime = new Date(flightToUpdate.flightActualArrivalDate);
+  flightActualArrivalDateTime.setHours(hour);
+  flightActualArrivalDateTime.setMinutes(minute);
+  
+  list.forEach(function (id) {
+        $("#"+id).val('');
+  });
+
+  console.log(flightToUpdate.flightID, flightActualArrivalDateTime);
+  App.updateFlight(flightToUpdate.flightID, flightActualArrivalDateTime); 
 }
 
 autocompleteFlightID(document.getElementById("setFlightID"));
