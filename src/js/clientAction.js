@@ -66,7 +66,7 @@ function initializeNewCustomer(){
 }
 
 function validatePhoneNumber(inputtxt) {
-  var phoneno = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+  var phoneno = /^(\+1)?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4}$/;
   if (inputtxt.match(phoneno)) 
     return true;
   else
