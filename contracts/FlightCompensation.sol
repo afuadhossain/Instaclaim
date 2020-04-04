@@ -186,8 +186,12 @@ contract FlightCompensation{
         availableFunds = availableFunds + msg.value;
     }
 
-    function USDtoWei(uint256 amount) internal returns (uint256) {
-        return (amount*1000000000000000000)/150;
+    function CADtoWei(uint256 amount) internal returns (uint256) {
+        return (amount*1000000000000000000)/200;
+    }
+
+    function WeiToETH(uint256 amount) internal returns (uint256) {
+        return amount/1000000000000000000;
     }
 
     //Deposits made with deposit() go to this function
@@ -204,10 +208,11 @@ contract FlightCompensation{
         address payable recipient
     )
     internal enoughFunds(compensation){
-        uint256 WEIcompensation = USDtoWei(compensation);
+        uint256 WEIcompensation = CADtoWei(compensation);
         //if(recipient.send(compensation)) {
-            recipient.transfer(WEIcompensation);
-            emit CompensationPaid(ID, WEIcompensation, recipient);
+        recipient.transfer(WEIcompensation);
+        uint256 ETHcompensation = WeiToETH(WEIcompensation);
+        emit CompensationPaid(ID, ETHcompensation, recipient);
         //}
         //else {
         //    bytes32 errorMessage = "airline is bankrupt no money";

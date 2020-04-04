@@ -12,7 +12,10 @@
   },
   "author": "",
   "license": "ISC",
+  "dependencies": {
+  },
   "devDependencies": {
-    "lite-server": "^2.3.0"
+    "lite-server": "^2.3.0",
+    "twilio": "^3.42.0"
   }
 }
