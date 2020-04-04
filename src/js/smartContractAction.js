@@ -138,37 +138,47 @@ App = {
       var flightIDencoded = web3.fromAscii(flightID); // web3.toAscii(val) to convert back
 
       App.contracts.FlightCompensation.deployed().then(async function(compensationInstance) {
+        var claimsCount = await compensationInstance.getClaimsCount(flightIDencoded, {from: account});
+        if (claimsCount == 0)
+          throw "ErrorFlightEmpty";
 
+        var flightStatusResponse = await compensationInstance.updateFlightStatus(
+        flightIDencoded, 
+        flightActualArrivalDateTime.getTime(), 
+        {from: account}
+        );
         
-        return [await compensationInstance.updateFlightStatus(
-          flightIDencoded, 
-          flightActualArrivalDateTime.getTime(), 
-          {from: account}
-          ), compensationInstance];
-      }).then(async function(results) {
-          console.log(results[0])
-          var compensationInstance = results[1];
-          var claimsCount = await compensationInstance.getClaimsCount(flightIDencoded, {from: account});
-          return [claimsCount, compensationInstance];
+        console.log(flightStatusResponse);
+        return [claimsCount, compensationInstance];
       }).then(async function (results) {
           var claimsCount = results[0];
           var compensationInstance = results[1];
           for (var i = 0; i < claimsCount; i++){
             var response = await compensationInstance.getClaim(flightIDencoded, i, {from: account});
-            var ID = response[0]; //claim.ID
-            var status = response[5]; //claim.status
-            var compensation = response[6]; //claim.compensation
-            var ETHaddress = response[7]; //claim.addresss
-            console.log(ID.toString(), status.toString(), compensation.toString(), ETHaddress.toString())
+            var ID = response[0].toString(); //claim.ID
+            var status = response[5].toString(); //claim.status
+            var compensation = response[6].toString(); //claim.compensation
+            var ETHaddress = response[7].toString(); //claim.addresss
+            console.log(ID, status.toString(), compensation.toString(), ETHaddress.toString())
           }
       }).catch(function(err) {   
+        if (err == "ErrorFlightEmpty"){
+          var idElement = document.getElementById("updateFlightID");
+          idElement.value = "";
+          idElement.className = "input-form-invalid";
+          idElement.setCustomValidity('There is no contract associated with this Flight ID.');
+          idElement.reportValidity();
+          displayErrorMessage = true;
+          return;
+        }
         console.log(err.message);
       });
     });
   }
 };
 
-flightList = {"AN.123.04.04.2020" : ""}
+flightList = {"AN.123.04.04.2020" : "",
+              "123" : ""};
 
 $(function() {
   $(window).on('load', function(){
