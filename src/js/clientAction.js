@@ -91,7 +91,7 @@ function validateName(name)
 
 function validateFlightNumber(code) 
 {
-  var flightNumberRegex = /^[a-zA-Z0-9_\-]*$/;
+  var flightNumberRegex = /^[0-9\-]*$/;
   if (code.match(flightNumberRegex)) 
     return true;
   else
