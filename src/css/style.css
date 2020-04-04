@@ -643,6 +643,10 @@ label.valid {
   .form-button {
     text-align: center; }
 
+  .form-button-fund {
+    display: inline-block; 
+    padding-right: 15px; }
+
   .signin-form {
     order: 1;
     -moz-order: 1;

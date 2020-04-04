@@ -203,9 +203,8 @@ function autocompleteFlightID(inp) {
       var nbElements = 0;
       /*for each item in the array...*/
       for (i = 0; i < arr.length; i++) {
-        //If the dict is empty, skip
-        var dictSize = Object.keys(flightList[arr[i]]).length;
-        if (dictSize == 0 && inp.id != "updateFlightID")
+        //If the dict does not contain the flight, skip (that means there are no passenger)
+        if (!(arr[i] in flightWaitingList) && inp.id != "updateFlightID")
             continue;
         /*check if the item starts with the same letters as the text field value:*/
         if (val == ""){
@@ -265,9 +264,8 @@ function autocompleteFlightID(inp) {
     var nbElements = 0;
     /*for each item in the array...*/
     for (i = 0; i < arr.length; i++) {
-      //If the dict is empty, skip
-      var dictSize = Object.keys(flightList[arr[i]]).length;
-      if (dictSize == 0 && inp.id != "updateFlightID")
+      //If the dict does not contain the flight, skip (that means there are no passenger)
+      if (!(arr[i] in flightWaitingList) && inp.id != "updateFlightID")
             continue;
       /*check if the item starts with the same letters as the text field value:*/
       if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
@@ -352,6 +350,31 @@ function autocompleteFlightID(inp) {
   });
 }
 
+
+// sendTextMessage("+15147466347", "salut");
+
+// sendEmail('awkokoroko@hotmail.com','Test',"This is a test");
+function sendEmail(recipient, subject, message) {
+  const url = "https://api.sendgrid.com/v3/mail/send";
+  const proxyurl = "https://cors-anywhere.herokuapp.com/";
+  const data = '{"personalizations": [{"to": [{"email": "' + recipient + '"}]}],\
+  "from": {"email": "noreply@instaclaim.com"},\
+  "subject": "' + subject + '",\
+  "content": [{"type": "text/plain", \
+  "value": "' + message + '"}]}'
+
+  const options = {
+    method: 'post',
+    body: data,
+    headers: {
+      'Authorization': "Bearer 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",
+      'Content-Type': 'application/json',
+    }
+  };
+
+  fetch(proxyurl + url, options)
+    .then( res => console.log(res));
+}
 
 function fundContract(){
   if(!checkValidityDev("sendAmount")) {

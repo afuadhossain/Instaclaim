@@ -1,5 +1,6 @@
 var flightList = {};
 var customer = {};
+var flightWaitingList = {};
 
 var optionsAirport = {
   shouldSort: true,
@@ -60,6 +61,7 @@ function initializeNewCustomer(){
     arrival : "",
     ETHaddress : "",
     ID : -1,
+    sent : false
   };
 }
 
@@ -550,7 +552,7 @@ function validateForm() {
   var keys = Object.keys(customer);
   
   var documentInvalid = false;
-  keys.filter(key => key != "ID").forEach(function (key, index) {
+  keys.filter(key => (key != "ID" && key != "sent")).forEach(function (key, index) {
     if(!checkValidity(key)) {
       document.getElementById(key).reportValidity();
       documentInvalid = true;
@@ -577,8 +579,8 @@ function validateForm() {
     flightList[flightID] = {};
   } 
   flightList[flightID][customer.ID] = customer;
-
   initializeNewCustomer();
+  flightWaitingList[flightID] = "";
 
   document.getElementById("devPage").style.display = "block";
 }

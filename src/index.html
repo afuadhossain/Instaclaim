@@ -113,7 +113,8 @@
                                 <input type="text" id="sendAmount" onKeyPress="newValueKeyPressDev(id)" onKeyUp="newValueKeyPressDev(id)" placeholder="Amount (Ether)"/>
                             </div>
                             <div class="form-group form-button" style="padding-bottom: 20px">
-                                <input type="submit" onclick="fundContract()" class="form-submit-dev" value="Send"/>
+                                <div style="display:inline-block; padding-right:10px;"><input type="submit" onclick="fundContract()" class="form-submit-dev" value="Send"/></div>
+                                <div style="display:inline-block"><input type="submit" onclick="fundContract()" class="form-submit-dev" value="Withdraw"/></div>
                             </div>
                         </form>
                         <form autocomplete="off" action="#" onsubmit="return false;" class="register-form">
@@ -189,6 +190,7 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/web3.min.js"></script>
     <script src="js/truffle-contract.js"></script>
+    <script src="js/twilio_compiled.js"></script>
     <script src="data/airports.js"></script>
     <script src="data/airlines.js"></script>
     <script src="data/major-airlines.js"></script>

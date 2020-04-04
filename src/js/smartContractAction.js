@@ -88,28 +88,36 @@ App = {
 
       App.contracts.FlightCompensation.deployed().then(function(compensationInstance) {
 
+        var travelers = flightList[flightID];
         var flightIDencoded = web3.fromAscii(flightID); // web3.toAscii(val) to convert back
         const hourInMilliSeconds = 10800000;
-        var travelers = flightList[flightID];
+        
         var resultList = []
-
         for (key in travelers){
-          resultList.push(compensationInstance.addNewClaim(
-            travelers[key].ID,
-            flightIDencoded,
-            airlineType,
-            flightArrivalDateTime.getTime() + hourInMilliSeconds,
-            flightArrivalDateTime.getTime() + 2*hourInMilliSeconds,
-            flightArrivalDateTime.getTime() + 3*hourInMilliSeconds,
-            travelers[key].ETHaddress,
-            {from: account}).then(function(key, response) {
-                console.log(response)
-                delete flightList[flightID][key];
-              }.bind(null, key)
-            ).catch(function(err) {   
-              console.log(err.message);
-            })
-          );
+          if (!travelers[key].sent) {
+            resultList.push(compensationInstance.addNewClaim(
+              travelers[key].ID,
+              flightIDencoded,
+              airlineType,
+              flightArrivalDateTime.getTime() + hourInMilliSeconds,
+              flightArrivalDateTime.getTime() + 2*hourInMilliSeconds,
+              flightArrivalDateTime.getTime() + 3*hourInMilliSeconds,
+              travelers[key].ETHaddress,
+              {from: account}).then(function(key, response) {
+                  console.log(response)
+                  travelers[key].sent = true;
+                  //Check if there is a passenger left in the flight to confirm
+                  for (key in travelers){
+                    if (!travelers[key].sent)
+                      return;
+                  }
+                  delete flightWaitingList[flightID];
+                }.bind(null, key)
+              ).catch(function(err) {   
+                console.log(err.message);
+              })
+            );
+          }
         }
         return resultList;
       }).then(function(result) {
@@ -127,22 +135,40 @@ App = {
         console.log(error);
       }
       var account = accounts[0];
+      var flightIDencoded = web3.fromAscii(flightID); // web3.toAscii(val) to convert back
 
-      App.contracts.FlightCompensation.deployed().then(function(compensationInstance) {
+      App.contracts.FlightCompensation.deployed().then(async function(compensationInstance) {
 
-        var flightIDencoded = web3.fromAscii(flightID); // web3.toAscii(val) to convert back
-        return compensationInstance.updateFlightStatus(
+        
+        return [await compensationInstance.updateFlightStatus(
           flightIDencoded, 
           flightActualArrivalDateTime.getTime(), 
-          {from: account});
-      }).then(function(result) {
-        console.log(result)
+          {from: account}
+          ), compensationInstance];
+      }).then(async function(results) {
+          console.log(results[0])
+          var compensationInstance = results[1];
+          var claimsCount = await compensationInstance.getClaimsCount(flightIDencoded, {from: account});
+          return [claimsCount, compensationInstance];
+      }).then(async function (results) {
+          var claimsCount = results[0];
+          var compensationInstance = results[1];
+          for (var i = 0; i < claimsCount; i++){
+            var response = await compensationInstance.getClaim(flightIDencoded, i, {from: account});
+            var ID = response[0]; //claim.ID
+            var status = response[5]; //claim.status
+            var compensation = response[6]; //claim.compensation
+            var ETHaddress = response[7]; //claim.addresss
+            console.log(ID.toString(), status.toString(), compensation.toString(), ETHaddress.toString())
+          }
       }).catch(function(err) {   
         console.log(err.message);
       });
     });
   }
 };
+
+flightList = {"AN.123.04.04.2020" : ""}
 
 $(function() {
   $(window).on('load', function(){
