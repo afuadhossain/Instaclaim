@@ -388,6 +388,18 @@ function fundContract(){
   }
 }
 
+function withdrawFunds() {
+  if(!checkValidityDev("sendAmount")) {
+    $("#sendAmount").val('');
+    return;  
+  } 
+  else {
+    $("#sendAmount").val('');
+    console.log('withdraw ether',sendAmountEther);
+    App.withdrawFunds(sendAmountEther);
+  }
+}
+
 
 function setFlightTime() {
   var list = ["setFlightID","flightArrivalDate","flightArrivalTime","airlineType"];

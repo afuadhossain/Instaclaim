@@ -67,6 +67,28 @@ App = {
     });
   },
 
+  withdrawFunds: function(amountEther) {
+    web3.eth.getAccounts(function(error, accounts) {
+      if (error) {
+        console.log(error);
+      }
+      //Account launching the contract
+      var account = accounts[0]; 
+      
+      App.contracts.FlightCompensation.deployed().then(function(compensationInstance) {
+        // Withdraw money with withdraw function
+        return compensationInstance.withdraw(
+          web3.toWei(amountEther, "ether"), 
+          {from: account}
+          );
+      }).then(function(result) {
+        console.log(result)
+      }).catch(function(err) {   
+        console.log(err.message);
+      });
+    });
+  },
+
   callFunctionsTest: async function() {
 
     App.createClaim();
