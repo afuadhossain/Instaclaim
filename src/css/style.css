@@ -277,7 +277,10 @@ body {
   width: 100%; }
 
 .signup-image {
-  margin: 0 0px; }
+  margin: 0 0px; 
+  position: relative;
+  margin-top: 200px;
+}
 
 .signup-image-inside{
   margin: 0;
@@ -287,14 +290,16 @@ body {
   transform: translateY(-50%);
 }
 
+.image-bottom{
+  margin-top: 0px;
+  margin-bottom: 100px;
+}
+
 .form-title {
   margin-bottom: 33px; }
 
 .form-title-dev {
   margin-bottom: 10px; }
-
-.signup-image {
-  margin-top: 45px; }
 
 figure {
   margin-bottom: 50px;
