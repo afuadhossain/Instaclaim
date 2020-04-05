@@ -360,7 +360,7 @@ function sendEmail(recipient, subject, message) {
   const data = '{"personalizations": [{"to": [{"email": "' + recipient + '"}]}],\
   "from": {"email": "noreply@instaclaim.com"},\
   "subject": "' + subject + '",\
-  "content": [{"type": "text/plain", \
+  "content": [{"type": "text/html", \
   "value": "' + message + '"}]}'
 
   const options = {
