@@ -180,17 +180,22 @@ contract FlightCompensation{
                     claim.maxArrivalTime2, claim.status, claim.compensation, claim.compensationAddress);
     }
 
+    //Requires pragma experimental ABIEncoderV2;
+    // function getAllClaims(bytes32 flightID) public view onlyIfCreator returns (Claim[] memory) {
+    //     return claimList[flightID];
+    // }
+
     //Fallback function. All deposits without any calling function by default go to this function
     //https://solidity.readthedocs.io/en/v0.5.3/contracts.html#fallback-function
     function() external payable {
         availableFunds = availableFunds + msg.value;
     }
 
-    function CADtoWei(uint256 amount) internal returns (uint256) {
+    function CADtoWei(uint256 amount) internal pure returns (uint256) {
         return (amount*1000000000000000000)/200;
     }
 
-    function WeiToETH(uint256 amount) internal returns (uint256) {
+    function WeiToETH(uint256 amount) internal pure returns (uint256) {
         return amount/1000000000000000000;
     }
 
@@ -198,7 +203,7 @@ contract FlightCompensation{
     function deposit() external payable onlyIfCreator {
         availableFunds = availableFunds + msg.value;
     }
-    function withdraw(uint16 amount) external onlyIfCreator enoughFunds(amount){
+    function withdraw(uint256 amount) external onlyIfCreator enoughFunds(amount){
         availableFunds = availableFunds - amount;
         creator.transfer(amount);
     }
