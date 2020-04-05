@@ -222,6 +222,7 @@ function autocompleteFlightID(inp) {
               /*close the list of autocompleted values,
               (or any other open lists of autocompleted values:*/
               closeAllLists();
+              setDate();
           });
           a.appendChild(b);
         }
@@ -241,6 +242,7 @@ function autocompleteFlightID(inp) {
               /*close the list of autocompleted values,
               (or any other open lists of autocompleted values:*/
               closeAllLists();
+              setDate();
           });
           a.appendChild(b);
         }
@@ -284,6 +286,7 @@ function autocompleteFlightID(inp) {
             /*close the list of autocompleted values,
             (or any other open lists of autocompleted values:*/
             closeAllLists();
+            setDate();
         });
         a.appendChild(b);
       }
@@ -342,6 +345,16 @@ function autocompleteFlightID(inp) {
     var x = document.getElementById(inp.id+"autocomplete-list")
     if (x && elmnt != x && elmnt != inp) {
       x.parentNode.removeChild(x);
+    }
+  }
+  function setDate(){
+    var value = inp.value;
+    var date = value.substr(value.length - 10)
+    if (inp.id == "updateFlightID"){
+      datepickerActualArrivalDate.setDate(date);
+    }
+    else if (inp.id == "setFlightID"){
+      datepickerArrivalDate.setDate(date);
     }
   }
   /*execute a function when someone clicks in the document:*/
