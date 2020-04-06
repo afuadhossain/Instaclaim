@@ -189,23 +189,27 @@ App = {
             if (travelers[ID]) {
               if (status == 1) { //Flight was on time
                 sendEmail(travelers[ID].email, "InstaClaim - Flight Status", "Hi " + travelers[ID].name + 
-                ",<br><br>You made it to your destination on time." +
-                "<br><br>We hope you had a pleasant flight.");
+                ",<br><br>This message is concerning your recent trip on flight #" + travelers[ID].flightNumber +
+                ".<br><br>You made it to your destination on time." +
+                "<br><br>We hope you had a pleasant flight. Thank you for using InstaClaim");
 
                 sendTextMessage(travelers[ID].phone, "Hi " + travelers[ID].name + 
-                ",\n\nYou made it to your destination on time." +
-                "\n\nWe hope you had a pleasant flight.");
+                ",\n\nThis message is concerning your recent trip on flight #" + travelers[ID].flightNumber +
+                ".\n\nYou made it to your destination on time." +
+                "\n\nWe hope you had a pleasant flight. Thank you for using InstaClaim");
               } 
               else if (status > 1) { //Flight was late
                 sendEmail(travelers[ID].email, "InstaClaim - Flight Status", "Hi " + travelers[ID].name +
-                ",<br><br>Unfortunately, your flight was delayed." +
-                "<br><br>A compensation of " + compensation + "USD (" + ETHcompensation + " ETH) was sent to your address " +
-                "*********" + ETHaddress.substr(ETHaddress.length - 5) + "<br><br>We hope you had a pleasant flight.");
+                ",<br><br>This message is concerning your recent trip on flight #" + travelers[ID].flightNumber +
+                ".<br><br>We see that your flight was delayed and/or cancelled. Surely, you know it by now." +
+                "<br><br>Luckily for you, a compensation of " + compensation + "CAD (" + ETHcompensation + " ETH) was sent to your address " +
+                "*****" + ETHaddress.substr(ETHaddress.length - 5) + ".<br><br>We hope you had a pleasant flight. Thank you for using InstaClaim");
 
                 sendTextMessage(travelers[ID].phone, "Hi " + travelers[ID].name + 
-                ",\n\nUnfortunately, your flight was delayed." +
-                "\n\nA compensation of " + compensation + "USD (" + ETHcompensation + " ETH) was sent to your address "+
-                "*********" + ETHaddress.substr(ETHaddress.length - 5) + "\n\n We hope you had a pleasant flight.");
+                ",\n\nThis message is concerning your recent trip on flight #" + travelers[ID].flightNumber +
+                ".\n\nWe see that your flight was delayed and/or cancelled. Surely, you know it by now." +
+                "\n\nLuckily for you, a compensation of " + compensation + "CAD (" + ETHcompensation + " ETH) was sent to your address "+
+                "*****" + ETHaddress.substr(ETHaddress.length - 5) + ".\n\n We hope you had a pleasant flight. Thank you for using InstaClaim");
               }
             }
           }
