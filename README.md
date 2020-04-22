@@ -39,23 +39,30 @@ Automatic flight interruption (delays, cancellations) claims and payment process
 7. Launch Instaclaim using: `npm run dev`
 
 8. You should get a notification in MetaMask requesting for permissions. Click on connect.
+
 ![Metamask](./images/metamask.png)
 
-9. In MetaMask go to Settings -> Networks -> Add Network: In the field Network Name enter "Instaclaim" and in New RPC URL enter "http://127.0.0.1:7545". Click on save.
+9. In MetaMask go to Settings -> Networks -> Add Network: In the field Network Name enter "Instaclaim" and in New RPC URL enter "http://127.0.0.1:7545". Click on save and select the new network.
 
-10. In MetaMask go in import account and important a private key of one of the addresses in Ganache. This will serve as the contract creator.
+10. In MetaMask go in import account and important a private key of one of the addresses in Ganache. This will serve as the contract creator. (If the account balance does not update go to Settings -> Advanced -> Reset Account)
 
 11. Fill in the passenger's information and create a flight. In the field Ethereum Address, enter the address of one of the accounts in Ganache. The application will return you an error if any field is missing or the information is wrong.
+
 ![Passenger Info](./images/passenger.png)
 
 12. After creating the flight, you will need to fund the contract with some ether (using the account you entered in MetaMask from Ganache). You can use 10 ethers.
+
 ![Fund Contract](./images/fund.png)
 
 13. You can now set the flight status; enter the scheduled arrival time (the time the plane is supposed to be landing) and the airline type. The airline type is 0 for small airline and 1 for large airline.
+
 ![Set Flight Time](./images/setflighttime.png)
 
 13. After setting the flight status, you can now update the actual arrival time of the plane (This would be done by an oracle in a real situation). If the flight is delayed by 3-6-9 hours, or more, you should see the balance of the associated compensation address updated in Ganache by the value of the compensation in Ether. 
+
 ![Set Flight Time](./images/updatestatus.png)
 
-14. In this case, the second address received 2 ethers for a delay of 3hours using a large airline. An email will also be sent to your email address with the compensation amount. All the events including the transactions are recorded in the receipts of the blockchain. These can be viewed in Ganache in the Events tab.
+14. In this case, the second address received 2 ethers for a delay of 3hours using a large airline. An email will also be sent to your email address with the information. Unfortunetaly, it costs money to send text messages so we disabled this feature. All the events including the transactions are recorded in the receipts on the blockchain. These can be viewed in Ganache in the Contracts and Events tabs.
+
 ![Compensation](./images/compensation.png)
+![Events](./images/events.png)
