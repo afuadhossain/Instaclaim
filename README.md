@@ -46,19 +46,19 @@ Automatic flight interruption (delays, cancellations) claims and payment process
 
 10. In MetaMask go in import account and important a private key of one of the addresses in Ganache. This will serve as the contract creator. (If the account balance does not update go to Settings -> Advanced -> Reset Account)
 
-11. Fill in the passenger's information and create a flight. In the field Ethereum Address, enter the address of one of the accounts in Ganache. The application will return you an error if any field is missing or the information is wrong.
+11. Fill in the passenger's information and create a flight. In the field Ethereum Address, enter the address of one of the accounts in Ganache. The application will return you an error if any field is missing or if the information is wrong.
 
 ![Passenger Info](./images/passenger.png)
 
-12. After creating the flight, you will need to fund the contract with some ether (using the account you entered in MetaMask from Ganache). You can use 10 ethers.
+12. After creating the flight, you will need to fund the contract with some ether (using the account you entered in MetaMask from Ganache). You can use 10 ethers. You should receive a prompt from MetaMask.
 
 ![Fund Contract](./images/fund.png)
 
-13. You can now set the flight status; enter the scheduled arrival time (the time the plane is supposed to be landing) and the airline type. The airline type is 0 for small airline and 1 for large airline.
+13. You can now set the flight status; enter the scheduled arrival time (the time the plane is supposed to be landing) and the airline type. The airline type is 0 for small airline and 1 for large airline. You should receive a prompt from MetaMask.
 
 ![Set Flight Time](./images/setflighttime.png)
 
-13. After setting the flight status, you can now update the actual arrival time of the plane (This would be done by an oracle in a real situation). If the flight is delayed by 3-6-9 hours, or more, you should see the balance of the associated compensation address updated in Ganache by the value of the compensation in Ether. 
+13. After setting the flight status, you can now update the actual arrival time of the plane (This would be done by an oracle in a full-implementation). You should receive a prompt from MetaMask. If the flight is delayed by 3-6-9 hours, or more, you should see the balance of the associated compensation address updated in Ganache by the value of the compensation in Ether. 
 
 ![Set Flight Time](./images/updatestatus.png)
 
