@@ -22,7 +22,7 @@ Automatic flight interruption (delays, cancellations) claims and payment process
 
 1. Clone the project: `git clone https://github.com/afuadhossain/IFT6056-Project.git`
 
-2. Go to the main directory: `cd IFT6056-Project`
+2. Go to the main directory and install dependencies: `cd IFT6056-Project` then `npm install`
 
 3. Launch the Ganache application and create a new workspace (or run ganache-cli).
 
