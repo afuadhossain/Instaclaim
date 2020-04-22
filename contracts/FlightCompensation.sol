@@ -214,15 +214,9 @@ contract FlightCompensation{
     )
     internal enoughFunds(compensation){
         uint256 WEIcompensation = CADtoWei(compensation);
-        //if(recipient.send(compensation)) {
         recipient.transfer(WEIcompensation);
         uint256 ETHcompensation = WeiToETH(WEIcompensation);
         emit CompensationPaid(ID, ETHcompensation, recipient);
-        //}
-        //else {
-        //    bytes32 errorMessage = "airline is bankrupt no money";
-        //    emit CompensationError(ID, WEIcompensation, recipient, errorMessage);
-        //}
     }
     function compensateIfEnoughFunds(Claim memory claimToPay) private {
         if (claimToPay.compensationAddress != address(0)) {

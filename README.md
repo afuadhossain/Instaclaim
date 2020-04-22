@@ -5,14 +5,14 @@ Automatic flight interruption (delays, cancellations) claims and payment process
 
 ## In order to launch Instaclaim you will need to install the following:
 
-1. Make sure Node.js is installed otherwise [Install Node.js](https://nodejs.org/en/)
+1. Make sure Node.js is installed: [Install Node.js](https://nodejs.org/en/)
 
-2. Make sure npm is installed other [Install npm](https://www.npmjs.com/get-npm)
+2. Make sure npm is installed: [Install npm](https://www.npmjs.com/get-npm)
 
 3. Using npm install truffle:
 `npm install -g truffle`
 
-4. Make sure truffle is installed using: `truffle version`
+4. Verify if truffle was correctly installed using: `truffle version`
 
 5. [Install Ganache](https://www.trufflesuite.com/ganache) (We recommend the GUI version in order to more easily view the changes in the account balances and the events emitted).
 
@@ -30,7 +30,7 @@ Automatic flight interruption (delays, cancellations) claims and payment process
 
 ![Ganache](./images/ganache.png)
 
-5. Go to setting in Ganache. Go to Server. Make sure the port number is 7545. (This can be configured in truffle-config.js)
+5. In Ganache, go to Settings -> Server. Make sure the port number is 7545. (This can be configured to another port in truffle-config.js)
 
 ![Server](./images/server.png)
 
@@ -45,4 +45,17 @@ Automatic flight interruption (delays, cancellations) claims and payment process
 
 10. In MetaMask go in import account and important a private key of one of the addresses in Ganache. This will serve as the contract creator.
 
-11. Fill in the field and create a flight. After updating the flight status. If the flight is delayed by 3hrs or more, you should see the balanche updated in the account associated to the compensation address.
+11. Fill in the passenger's information and create a flight. In the field Ethereum Address, enter the address of one of the accounts in Ganache. The application will return you an error if any field is missing or the information is wrong.
+![Passenger Info](./images/passenger.png)
+
+12. After creating the flight, you will need to fund the contract with some ether (using the account you entered in MetaMask from Ganache). You can use 10 ethers.
+![Fund Contract](./images/fund.png)
+
+13. You can now set the flight status; enter the scheduled arrival time (the time the plane is supposed to be landing) and the airline type. The airline type is 0 for small airline and 1 for large airline.
+![Set Flight Time](./images/setflighttime.png)
+
+13. After setting the flight status, you can now update the actual arrival time of the plane (This would be done by an oracle in a real situation). If the flight is delayed by 3-6-9 hours, or more, you should see the balance of the associated compensation address updated in Ganache by the value of the compensation in Ether. 
+![Set Flight Time](./images/updatestatus.png)
+
+14. In this case, the second address received 2 ethers for a delay of 3hours using a large airline. An email will also be sent to your email address with the compensation amount. All the events including the transactions are recorded in the receipts of the blockchain. These can be viewed in Ganache in the Events tab.
+![Compensation](./images/compensation.png)
