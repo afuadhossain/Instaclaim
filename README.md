@@ -41,6 +41,8 @@ Automatic flight interruption (delays, cancellations) claims and payment process
 8. You should get a notification in MetaMask requesting for permissions. Click on connect.
 ![Metamask](./images/metamask.png)
 
-9. In MetaMask go in import account and important a private key of one of the addresses in Ganache. This will serve as the contract creator.
+9. In MetaMask go to Settings -> Networks -> Add Network: In the field Network Name enter "Instaclaim" and in New RPC URL enter "http://127.0.0.1:7545". Click on save.
 
-10. Fill in the field and create a flight. After updating the flight status. If the flight is delayed by 3hrs or more, you should see the balanche updated in the account associated to the compensation address.
+10. In MetaMask go in import account and important a private key of one of the addresses in Ganache. This will serve as the contract creator.
+
+11. Fill in the field and create a flight. After updating the flight status. If the flight is delayed by 3hrs or more, you should see the balanche updated in the account associated to the compensation address.
