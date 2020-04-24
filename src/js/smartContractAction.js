@@ -187,6 +187,7 @@ App = {
             console.log(ID, status.toString(), compensation.toString(), ETHaddress.toString())
 
             if (travelers[ID]) {
+              return //Send emails and sms is currently disabled (You need to enter your own tokens)
               if (status == 1) { //Flight was on time
                 sendEmail(travelers[ID].email, "InstaClaim - Flight Status", "Hi " + travelers[ID].name + 
                 ",<br><br>This message is concerning your recent trip on flight #" + travelers[ID].flightNumber +

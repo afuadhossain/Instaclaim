@@ -62,7 +62,9 @@ Automatic flight interruption (delays, cancellations) claims and payment process
 
 ![Set Flight Time](./images/updatestatus.png)
 
-14. In this case, the second address received 2 ethers for a delay of 3hours using a large airline. An email will also be sent to your email address with the information. Unfortunetaly, it costs money to send text messages so we disabled this feature. All the events including the transactions are recorded in the receipts on the blockchain. These can be viewed in Ganache in the Contracts and Events tabs.
+14. In this case, the second address received 2 ethers for a delay of 3hours using a large airline. All the events including the transactions are recorded in the receipts on the blockchain. These can be viewed in Ganache in the Contracts and Events tabs.
 
 ![Compensation](./images/compensation.png)
 ![Events](./images/events.png)
+
+15. The code also includes the option to send an email and text message with the flight information and compensation if any. However, this feature requires a special token to access the provider's API that cannot be pushed on GitHub for security reasons. Nevertheless, you can create your own account with Twilio or SendGrid and use your own token to use emails and sms.

@@ -363,10 +363,6 @@ function autocompleteFlightID(inp) {
   });
 }
 
-
-// sendTextMessage("+15147466347", "salut");
-
-// sendEmail('awkokoroko@hotmail.com','Test',"This is a test");
 function sendEmail(recipient, subject, message) {
   const url = "https://api.sendgrid.com/v3/mail/send";
   const proxyurl = "https://cors-anywhere.herokuapp.com/";
@@ -380,7 +376,7 @@ function sendEmail(recipient, subject, message) {
     method: 'post',
     body: data,
     headers: {
-      'Authorization': "Bearer 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",
+      'Authorization': "", //Enter your sendGrid API token here
       'Content-Type': 'application/json',
     }
   };
